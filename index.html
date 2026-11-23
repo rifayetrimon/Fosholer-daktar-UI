@@ -1046,20 +1046,31 @@ async function sendMessage() {
     });
   }
 
+  function setTypingMsg(msg) {
+    const el = document.getElementById(tid);
+    if (!el) return;
+    const b = el.querySelector('.typing-bubble, .m-text');
+    if (b) b.textContent = msg;
+  }
+
   try {
     let res;
     try {
       res = await doChat();
     } catch(e) {
       if (e.message === 'Failed to fetch') {
-        // Server likely sleeping — wait 20s and retry once
-        const typingEl = document.getElementById(tid);
-        if (typingEl) {
-          const bubble = typingEl.querySelector('.typing-bubble');
-          if (bubble) bubble.title = 'সার্ভার চালু হচ্ছে…';
+        // Server sleeping — retry up to 2 more times with longer waits
+        setTypingMsg('সার্ভার চালু হচ্ছে… (৩৫ সেকেন্ড অপেক্ষা করুন)');
+        await new Promise(r => setTimeout(r, 35000));
+        try {
+          res = await doChat();
+        } catch(e2) {
+          if (e2.message === 'Failed to fetch') {
+            setTypingMsg('সার্ভার চালু হচ্ছে… (আরও ৩০ সেকেন্ড)');
+            await new Promise(r => setTimeout(r, 30000));
+            res = await doChat();
+          } else { throw e2; }
         }
-        await new Promise(r => setTimeout(r, 20000));
-        res = await doChat();
       } else { throw e; }
     }
 
