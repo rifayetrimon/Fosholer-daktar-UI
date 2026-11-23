@@ -865,6 +865,7 @@ function doLogout() {
   document.getElementById('password').value = '';
 }
 function showApp() {
+  document.getElementById('backendBanner').hidden = true;
   document.getElementById('loginPage').hidden = true;
   document.getElementById('app').hidden = false;
   document.getElementById('uEmail').textContent = userInfo.email || 'User';
