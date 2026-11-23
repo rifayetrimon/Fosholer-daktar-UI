@@ -958,14 +958,34 @@ async function sendMessage() {
   appendUserMsg(userText, file);
   history.push({ role: 'user', content: userText || '📷 ছবি' });
   const tid = appendTyping();
-  try {
+
+  async function doChat(attempt) {
     const fd = new FormData();
     fd.append('message', userText);
     fd.append('history', JSON.stringify(history.slice(0, -1)));
     if (file) fd.append('image', file, file.name);
-    const res = await fetch(`${API}/api/v1/chat/`, {
+    return fetch(`${API}/api/v1/chat/`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
     });
+  }
+
+  try {
+    let res;
+    try {
+      res = await doChat();
+    } catch(e) {
+      if (e.message === 'Failed to fetch') {
+        // Server likely sleeping — wait 20s and retry once
+        const typingEl = document.getElementById(tid);
+        if (typingEl) {
+          const bubble = typingEl.querySelector('.typing-bubble');
+          if (bubble) bubble.title = 'সার্ভার চালু হচ্ছে…';
+        }
+        await new Promise(r => setTimeout(r, 20000));
+        res = await doChat();
+      } else { throw e; }
+    }
+
     removeEl(tid);
     if (res.status === 401) { doLogout(); return; }
     if (!res.ok) { const er = await res.json().catch(()=>({})); throw new Error(er.detail || `Error ${res.status}`); }
@@ -980,7 +1000,7 @@ async function sendMessage() {
   } catch(e) {
     removeEl(tid);
     const msg = e.message === 'Failed to fetch'
-      ? 'সার্ভার সংযোগ ব্যর্থ হয়েছে। সার্ভার চালু হচ্ছে, কিছুক্ষণ পরে আবার চেষ্টা করুন।'
+      ? 'সার্ভার চালু হচ্ছে। একটু অপেক্ষা করুন, তারপর আবার পাঠান।'
       : `সমস্যা হয়েছে: ${e.message}`;
     appendBotMsg({ reply: msg, sources_used: false });
   }
