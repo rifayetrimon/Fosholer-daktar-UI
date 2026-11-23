@@ -698,12 +698,12 @@ textarea, input { font-family: inherit; }
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Disease Name *</label>
-              <input type="text" id="diseaseName" placeholder="e.g. Rice Blast">
+              <label>Disease Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+              <input type="text" id="diseaseName" placeholder="e.g. Rice Blast — leave blank for general guide">
             </div>
             <div class="form-group">
-              <label>Crop Name *</label>
-              <input type="text" id="cropName" placeholder="e.g. Rice">
+              <label>Crop Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+              <input type="text" id="cropName" placeholder="e.g. Rice — leave blank for all crops">
             </div>
           </div>
           <div class="form-group" style="margin-bottom:0">
@@ -1097,8 +1097,6 @@ async function uploadDocument() {
   const crop    = document.getElementById('cropName').value.trim();
   const source  = document.getElementById('sourceUrl').value.trim();
   if (!docFile)  { showUploadResult('error', 'Please select a document file.'); return; }
-  if (!disease)  { showUploadResult('error', 'Disease name is required.'); return; }
-  if (!crop)     { showUploadResult('error', 'Crop name is required.'); return; }
   const btn = document.getElementById('uploadBtn');
   btn.disabled = true; btn.innerHTML = '<span>Uploading…</span>';
   try {
