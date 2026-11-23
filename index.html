@@ -696,16 +696,6 @@ textarea, input { font-family: inherit; }
             <div class="drop-zone-text"><strong>Click to browse</strong> or drag & drop</div>
             <div class="drop-zone-hint">PDF, TXT — disease knowledge documents</div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Disease Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
-              <input type="text" id="diseaseName" placeholder="e.g. Rice Blast — leave blank for general guide">
-            </div>
-            <div class="form-group">
-              <label>Crop Name <span style="color:var(--muted);font-weight:400">(optional)</span></label>
-              <input type="text" id="cropName" placeholder="e.g. Rice — leave blank for all crops">
-            </div>
-          </div>
           <div class="form-group" style="margin-bottom:0">
             <label>Source (optional)</label>
             <input type="text" id="sourceUrl" placeholder="e.g. BRRI 2024 field guide">
@@ -1093,17 +1083,13 @@ function onDrop(e) {
 }
 
 async function uploadDocument() {
-  const disease = document.getElementById('diseaseName').value.trim();
-  const crop    = document.getElementById('cropName').value.trim();
-  const source  = document.getElementById('sourceUrl').value.trim();
-  if (!docFile)  { showUploadResult('error', 'Please select a document file.'); return; }
+  const source = document.getElementById('sourceUrl').value.trim();
+  if (!docFile) { showUploadResult('error', 'Please select a document file.'); return; }
   const btn = document.getElementById('uploadBtn');
   btn.disabled = true; btn.innerHTML = '<span>Uploading…</span>';
   try {
     const fd = new FormData();
     fd.append('file', docFile, docFile.name);
-    fd.append('disease_name', disease);
-    fd.append('crop_name', crop);
     if (source) fd.append('source', source);
     const res = await fetch(`${API}/api/v1/knowledge/upload-document`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
@@ -1113,8 +1099,6 @@ async function uploadDocument() {
     const count = Array.isArray(data) ? data.length : 1;
     showUploadResult('success', `Uploaded successfully! Created ${count} knowledge chunk${count>1?'s':''}.`);
     docFile = null; resetDropZone();
-    document.getElementById('diseaseName').value = '';
-    document.getElementById('cropName').value = '';
     document.getElementById('sourceUrl').value = '';
     loadKnowledge();
   } catch(e) {
