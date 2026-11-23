@@ -487,6 +487,19 @@ textarea, input { font-family: inherit; }
 .k-empty { text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px; }
 .k-empty-icon { font-size: 36px; margin-bottom: 10px; }
 
+/* Backend status banner */
+.backend-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 10px 16px; font-size: 13px; font-weight: 500;
+  text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.backend-banner.waking {
+  background: var(--amber-bg); color: #92400e; border-bottom: 1px solid var(--amber-border);
+}
+.backend-banner.error {
+  background: #fee2e2; color: #991b1b; border-bottom: 1px solid #fca5a5;
+}
+
 /* Toast */
 .toast {
   position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
@@ -521,6 +534,7 @@ textarea, input { font-family: inherit; }
 <body>
 
 <div class="toast" id="toast"></div>
+<div id="backendBanner" hidden></div>
 
 <!-- ══════════ LOGIN ══════════ -->
 <div id="loginPage" class="login-page">
@@ -744,7 +758,28 @@ let chatSessions = [], allKnowledge = [], currentView = 'chat';
     chatSessions = JSON.parse(localStorage.getItem('fd_sessions') || '[]');
   } catch(e) {}
   if (token) showApp();
+  wakeBackend();
 })();
+
+async function wakeBackend() {
+  const banner = document.getElementById('backendBanner');
+  banner.className = 'backend-banner waking';
+  banner.innerHTML = '⏳ Connecting to server…';
+  banner.hidden = false;
+  try {
+    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(30000) });
+    if (r.ok) { banner.hidden = true; return; }
+    throw new Error(`HTTP ${r.status}`);
+  } catch(e) {
+    if (e.name === 'TimeoutError' || e.name === 'AbortError') {
+      banner.className = 'backend-banner error';
+      banner.innerHTML = '⚠️ Server is starting up — please wait a moment and try again.';
+    } else {
+      banner.className = 'backend-banner error';
+      banner.innerHTML = '⚠️ Cannot reach server. Check your connection or try refreshing.';
+    }
+  }
+}
 
 function updateSend() {
   document.getElementById('sendBtn').disabled = !document.getElementById('msgInput').value.trim() && !attachedImg;
@@ -938,7 +973,10 @@ async function sendMessage() {
     }
   } catch(e) {
     removeEl(tid);
-    appendBotMsg({ reply: `সমস্যা হয়েছে: ${e.message}`, sources_used: false });
+    const msg = e.message === 'Failed to fetch'
+      ? 'সার্ভার সংযোগ ব্যর্থ হয়েছে। সার্ভার চালু হচ্ছে, কিছুক্ষণ পরে আবার চেষ্টা করুন।'
+      : `সমস্যা হয়েছে: ${e.message}`;
+    appendBotMsg({ reply: msg, sources_used: false });
   }
   isLoading = false; updateSend(); scrollBottom();
 }
