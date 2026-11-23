@@ -682,6 +682,7 @@ textarea, input { font-family: inherit; }
               placeholder="আপনার ফসলের সমস্যা লিখুন..."
               onkeydown="handleKey(event)"
               oninput="autoResize(this); updateSend();"
+              onpaste="handlePaste(event)"
             ></textarea>
             <div class="input-btns">
               <button class="btn-attach" onclick="document.getElementById('img-file-input').click()" title="Upload leaf photo">
@@ -1001,6 +1002,24 @@ function removeAttach() {
   document.getElementById('attachPreview').hidden = true;
   document.getElementById('attachThumb').src = '';
   updateSend();
+}
+function handlePaste(e) {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      const file = item.getAsFile();
+      if (!file) return;
+      attachedImg = file;
+      const name = file.name && file.name !== 'image.png' ? file.name : 'pasted-image.png';
+      document.getElementById('attachThumb').src = URL.createObjectURL(file);
+      document.getElementById('attachName').textContent = name;
+      document.getElementById('attachPreview').hidden = false;
+      document.getElementById('sendBtn').disabled = false;
+      return;
+    }
+  }
 }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
