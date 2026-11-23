@@ -867,7 +867,12 @@ let uploadedFiles = [];
 function convKey() { return `fd_convs_${userInfo.email || 'guest'}`; }
 
 function loadUserConversations() {
-  try { chatSessions = JSON.parse(localStorage.getItem(convKey()) || '[]'); } catch(e) { chatSessions = []; }
+  try {
+    const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
+    const all = JSON.parse(localStorage.getItem(convKey()) || '[]');
+    chatSessions = all.filter(s => Date.now() - (s.ts || 0) < TEN_DAYS);
+    if (chatSessions.length !== all.length) saveUserConversations(); // purge expired
+  } catch(e) { chatSessions = []; }
 }
 function saveUserConversations() {
   try { localStorage.setItem(convKey(), JSON.stringify(chatSessions)); } catch(e) {}
@@ -1186,7 +1191,7 @@ async function sendMessage() {
       chatSessions.push({ id: currentConvId, title: (userText || 'Image chat').slice(0, 42), messages: [...history], ts: Date.now() });
     } else {
       const idx = chatSessions.findIndex(s => s.id === currentConvId);
-      if (idx >= 0) chatSessions[idx].messages = [...history];
+      if (idx >= 0) { chatSessions[idx].messages = [...history]; chatSessions[idx].ts = Date.now(); }
     }
     saveUserConversations();
     renderHistory();
