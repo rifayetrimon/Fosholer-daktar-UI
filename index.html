@@ -760,21 +760,23 @@ function saveUserConversations() {
     userInfo = JSON.parse(localStorage.getItem('fd_user') || '{}');
   } catch(e) {}
   if (token) {
-    // Refresh profile from server in background
-    fetch(`${API}/api/v1/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
-      .then(r => r.ok ? r.json() : null)
-      .then(mu => {
-        if (!mu) return;
+    // Await fresh profile (5s timeout) so sidebar always shows real full_name
+    try {
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 5000);
+      const r = await fetch(`${API}/api/v1/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+        signal: ctrl.signal
+      });
+      clearTimeout(tid);
+      if (r.ok) {
+        const mu = await r.json();
         userInfo.full_name = mu.full_name || userInfo.full_name;
-        userInfo.email = mu.email || userInfo.email;
-        userInfo.role = mu.role || userInfo.role;
+        userInfo.email    = mu.email    || userInfo.email;
+        userInfo.role     = mu.role     || userInfo.role;
         try { localStorage.setItem('fd_user', JSON.stringify(userInfo)); } catch(e) {}
-        const displayName = userInfo.full_name || userInfo.email || 'User';
-        const el = document.getElementById('uEmail');
-        if (el) el.textContent = displayName;
-        const av = document.getElementById('userAv');
-        if (av) av.textContent = displayName[0].toUpperCase();
-      }).catch(() => {});
+      }
+    } catch(e) {}
     showApp();
   }
 })();
