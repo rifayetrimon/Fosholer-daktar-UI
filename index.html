@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── Tokens ── */
 :root {
   --sidebar: #171717;
   --sidebar-hover: #262626;
@@ -20,57 +19,41 @@
   --muted: #8e8ea0;
   --accent: #10a37f;
   --accent-hover: #0d8c6d;
+  --accent-dim: rgba(16,163,127,.12);
   --user-bubble: #2f2f2f;
   --danger: #ef4444;
+  --warn: #f59e0b;
   color-scheme: dark;
 }
-
-/* ── Reset ── */
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
-  font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif;
-  background: var(--main);
-  color: var(--text);
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
+  font-family: 'Inter','Noto Sans Bengali',system-ui,sans-serif;
+  background: var(--main); color: var(--text);
+  overflow: hidden; -webkit-font-smoothing: antialiased;
 }
 [hidden] { display: none !important; }
 button { font-family: inherit; cursor: pointer; }
-textarea, input { font-family: inherit; }
+textarea, input, select { font-family: inherit; }
 
-/* ════════════════════════════════
-   LOGIN PAGE
-════════════════════════════════ */
+/* ════════════ LOGIN ════════════ */
 .login-page {
   display: flex; align-items: center; justify-content: center;
-  height: 100vh; height: 100dvh;
+  height: 100vh; height: 100dvh; padding: 24px 20px;
   background: var(--main);
-  padding: 24px 20px;
 }
 .login-card { width: 100%; max-width: 380px; }
-
-.login-brand {
-  text-align: center; margin-bottom: 32px;
-}
+.login-brand { text-align: center; margin-bottom: 32px; }
 .brand-icon {
   width: 48px; height: 48px; background: var(--accent);
   border-radius: 12px; display: flex; align-items: center;
   justify-content: center; font-size: 24px; margin: 0 auto 16px;
 }
-.brand-name {
-  font-size: 24px; font-weight: 600; color: var(--text);
-  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
-}
-.brand-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
-
+.brand-name { font-size: 24px; font-weight: 600; font-family:'Noto Sans Bengali','Inter',sans-serif; }
+.brand-sub  { font-size: 13px; color: var(--muted); margin-top: 4px; }
 .login-title { font-size: 20px; font-weight: 600; text-align: center; margin-bottom: 24px; }
-
 .field { margin-bottom: 12px; }
-.field label {
-  display: block; font-size: 13px; color: var(--muted);
-  margin-bottom: 6px; font-weight: 500;
-}
+.field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
 .field input {
   width: 100%; padding: 12px 14px;
   background: var(--surface); border: 1px solid var(--border);
@@ -79,55 +62,39 @@ textarea, input { font-family: inherit; }
 }
 .field input:focus { border-color: var(--accent); }
 .field input::placeholder { color: var(--muted); }
-
 .btn-login {
-  width: 100%; padding: 13px;
-  background: var(--accent); color: white;
-  border: none; border-radius: 8px;
-  font-size: 15px; font-weight: 600;
+  width: 100%; padding: 13px; background: var(--accent); color: white;
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
   margin-top: 8px; transition: background .15s;
 }
 .btn-login:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-login:disabled { opacity: .5; cursor: not-allowed; }
-
 .login-err {
   margin-top: 12px; padding: 10px 14px;
   background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
   color: #fca5a5; border-radius: 8px; font-size: 13px;
 }
 
-/* ════════════════════════════════
-   APP SHELL
-════════════════════════════════ */
+/* ════════════ APP SHELL ════════════ */
 .app { display: flex; height: 100vh; height: 100dvh; }
-
-/* Overlay */
-.overlay {
-  display: none; position: fixed; inset: 0; z-index: 40;
-  background: rgba(0,0,0,.5);
-}
+.overlay { display: none; position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.5); }
 .overlay.show { display: block; }
 
 /* ── Sidebar ── */
 .sidebar {
   width: 260px; flex-shrink: 0;
   background: var(--sidebar);
-  display: flex; flex-direction: column;
-  height: 100%; z-index: 50;
+  display: flex; flex-direction: column; height: 100%; z-index: 50;
   transition: transform .25s ease;
 }
-.sidebar-top {
-  padding: 12px 10px 8px;
-  display: flex; gap: 6px; align-items: center;
-}
+.sidebar-top { padding: 12px 10px 8px; display: flex; gap: 6px; align-items: center; }
 .btn-new-chat {
   flex: 1; display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; background: none; border: none;
-  color: var(--text); border-radius: 8px; font-size: 14px;
-  font-weight: 500; transition: background .15s; text-align: left;
+  padding: 10px 12px; background: none; border: none; color: var(--text);
+  border-radius: 8px; font-size: 14px; font-weight: 500;
+  transition: background .15s; text-align: left;
 }
 .btn-new-chat:hover { background: var(--sidebar-hover); }
-
 .btn-icon-sm {
   width: 36px; height: 36px; border-radius: 8px;
   background: none; border: none; color: var(--muted);
@@ -136,10 +103,24 @@ textarea, input { font-family: inherit; }
 }
 .btn-icon-sm:hover { background: var(--sidebar-hover); color: var(--text); }
 
+/* Nav items (Chat / Manage) */
+.sidebar-nav { padding: 6px 10px; display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px; font-size: 14px; font-weight: 500;
+  color: var(--muted); background: none; border: none;
+  transition: background .15s, color .15s; text-align: left; width: 100%;
+}
+.nav-item:hover { background: var(--sidebar-hover); color: var(--text); }
+.nav-item.active { background: var(--sidebar-hover); color: var(--text); }
+.nav-item svg { flex-shrink: 0; }
+
+.sidebar-divider { height: 1px; background: var(--border); margin: 6px 10px; }
+
 .sidebar-label {
   padding: 4px 20px 2px;
   font-size: 11px; font-weight: 600; color: var(--muted);
-  letter-spacing: .06em; text-transform: uppercase; margin-top: 8px;
+  letter-spacing: .06em; text-transform: uppercase; margin-top: 4px;
 }
 .sidebar-list {
   flex: 1; overflow-y: auto; padding: 4px 10px;
@@ -149,8 +130,7 @@ textarea, input { font-family: inherit; }
   display: flex; align-items: center; gap: 10px;
   padding: 8px 10px; border-radius: 8px; font-size: 13px;
   color: var(--muted); cursor: pointer;
-  transition: background .15s, color .15s;
-  overflow: hidden;
+  transition: background .15s, color .15s; overflow: hidden;
 }
 .s-item:hover { background: var(--sidebar-hover); color: var(--text); }
 .s-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -169,11 +149,8 @@ textarea, input { font-family: inherit; }
   color: white; flex-shrink: 0;
 }
 .user-info { flex: 1; min-width: 0; }
-.u-email {
-  font-size: 13px; font-weight: 500; color: var(--text);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.u-role { font-size: 11px; color: var(--muted); }
+.u-email { font-size: 13px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.u-role  { font-size: 11px; color: var(--muted); }
 .btn-logout {
   background: none; border: none; color: var(--muted);
   padding: 4px; border-radius: 4px; display: flex; align-items: center;
@@ -182,33 +159,25 @@ textarea, input { font-family: inherit; }
 .btn-logout:hover { color: var(--danger); }
 
 /* ── Main ── */
-.main {
-  flex: 1; min-width: 0;
-  display: flex; flex-direction: column;
-  background: var(--main);
-}
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--main); }
 
-/* Mobile header */
 .mob-header {
   display: none; align-items: center; gap: 12px;
   padding: 12px 16px;
   padding-top: calc(12px + env(safe-area-inset-top, 0px));
-  border-bottom: 1px solid var(--border);
-  background: var(--main); flex-shrink: 0;
+  border-bottom: 1px solid var(--border); background: var(--main); flex-shrink: 0;
 }
-.mob-title {
-  font-size: 15px; font-weight: 600; flex: 1; text-align: center;
-  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
-}
+.mob-title { font-size: 15px; font-weight: 600; flex: 1; text-align: center; font-family:'Noto Sans Bengali','Inter',sans-serif; }
 .btn-ham {
   width: 36px; height: 36px; border-radius: 8px;
   background: none; border: none; color: var(--muted);
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
+  display: flex; align-items: center; justify-content: center; transition: background .15s;
 }
 .btn-ham:hover { background: var(--surface); color: var(--text); }
 
-/* Messages */
+/* ════════════ CHAT VIEW ════════════ */
+.chat-view { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
 .messages {
   flex: 1; overflow-y: auto; scroll-behavior: smooth;
   scrollbar-width: thin; scrollbar-color: var(--border) transparent;
@@ -216,11 +185,8 @@ textarea, input { font-family: inherit; }
 .messages::-webkit-scrollbar { width: 5px; }
 .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-.msg-wrapper {
-  padding: 24px 16px; max-width: 760px; margin: 0 auto; width: 100%;
-}
+.msg-wrapper { padding: 24px 16px; max-width: 760px; margin: 0 auto; width: 100%; }
 
-/* Welcome */
 .welcome-screen {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; min-height: calc(100vh - 180px);
@@ -231,18 +197,9 @@ textarea, input { font-family: inherit; }
   display: flex; align-items: center; justify-content: center;
   font-size: 28px; margin-bottom: 20px;
 }
-.w-title {
-  font-size: 26px; font-weight: 600; margin-bottom: 10px;
-  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
-}
-.w-sub {
-  font-size: 15px; color: var(--muted); margin-bottom: 32px;
-  line-height: 1.6; max-width: 420px;
-}
-.chip-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 10px; max-width: 560px; width: 100%;
-}
+.w-title { font-size: 26px; font-weight: 600; margin-bottom: 10px; font-family:'Noto Sans Bengali','Inter',sans-serif; }
+.w-sub { font-size: 15px; color: var(--muted); margin-bottom: 32px; line-height: 1.6; max-width: 420px; }
+.chip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 560px; width: 100%; }
 .chip-card {
   display: flex; align-items: flex-start; gap: 10px;
   padding: 14px 16px; border-radius: 10px;
@@ -250,15 +207,13 @@ textarea, input { font-family: inherit; }
   cursor: pointer; text-align: left;
   transition: background .15s, border-color .15s;
   font-size: 13px; color: var(--text); line-height: 1.4;
-  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+  font-family:'Noto Sans Bengali','Inter',sans-serif;
 }
 .chip-card:hover { background: var(--surface2); border-color: var(--accent); }
 .chip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
-/* Message rows */
 .msg-row { display: flex; gap: 16px; margin-bottom: 24px; }
 .msg-row.user { flex-direction: row-reverse; }
-
 .m-av {
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -266,40 +221,28 @@ textarea, input { font-family: inherit; }
 }
 .msg-row.bot  .m-av { background: var(--accent); color: white; }
 .msg-row.user .m-av { background: var(--surface2); color: var(--text); }
-
 .m-body { flex: 1; min-width: 0; }
 .msg-row.user .m-body { max-width: 72%; }
-
 .m-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-
-.m-img {
-  max-width: 220px; border-radius: 10px; overflow: hidden;
-  border: 1px solid var(--border); margin-bottom: 8px;
-}
+.m-img { max-width: 220px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 8px; }
 .m-img img { width: 100%; display: block; }
-
 .disease-pill {
   display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(16,163,127,.12); border: 1px solid rgba(16,163,127,.35);
+  background: var(--accent-dim); border: 1px solid rgba(16,163,127,.35);
   color: #34d399; border-radius: 999px;
   padding: 4px 12px; font-size: 12px; font-weight: 500;
-  margin-bottom: 8px; letter-spacing: .01em;
+  margin-bottom: 8px;
 }
-
 .m-text {
   font-size: 15px; line-height: 1.75; color: var(--text);
-  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+  font-family:'Noto Sans Bengali','Inter',sans-serif;
   white-space: pre-wrap; word-break: break-word;
 }
 .msg-row.user .m-text {
   background: var(--user-bubble); padding: 12px 16px;
   border-radius: 18px 18px 4px 18px; display: inline-block; max-width: 100%;
 }
-
-.m-actions {
-  display: flex; gap: 4px; margin-top: 8px; opacity: 0;
-  transition: opacity .15s;
-}
+.m-actions { display: flex; gap: 4px; margin-top: 8px; opacity: 0; transition: opacity .15s; }
 .msg-row:hover .m-actions { opacity: 1; }
 .m-act-btn {
   background: none; border: none; color: var(--muted);
@@ -308,111 +251,193 @@ textarea, input { font-family: inherit; }
   transition: background .15s, color .15s;
 }
 .m-act-btn:hover { background: var(--surface); color: var(--text); }
-
-/* Typing */
 .typing-row { display: flex; gap: 16px; margin-bottom: 24px; }
-.typing-dots {
-  display: flex; gap: 5px; padding: 14px 0; align-items: center;
-}
-.dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--muted);
-  animation: bounce 1.3s infinite ease-in-out;
-}
+.typing-dots { display: flex; gap: 5px; padding: 14px 0; align-items: center; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); animation: bounce 1.3s infinite ease-in-out; }
 .dot:nth-child(2) { animation-delay: .2s; }
 .dot:nth-child(3) { animation-delay: .4s; }
-@keyframes bounce {
-  0%,60%,100% { transform: translateY(0); }
-  30%          { transform: translateY(-8px); }
-}
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-8px)} }
 
-/* ── Input area ── */
-.input-wrap {
-  padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
-  flex-shrink: 0;
-}
+.input-wrap { padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); flex-shrink: 0; }
 .input-inner { max-width: 760px; margin: 0 auto; }
-
 .attach-preview {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; background: var(--surface);
-  border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px;
+  padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 8px;
 }
-.attach-preview img {
-  width: 44px; height: 44px; object-fit: cover;
-  border-radius: 7px; flex-shrink: 0;
-}
+.attach-preview img { width: 44px; height: 44px; object-fit: cover; border-radius: 7px; flex-shrink: 0; }
 .a-info { flex: 1; min-width: 0; }
-.a-name {
-  font-size: 13px; font-weight: 500; color: var(--text);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
+.a-name { font-size: 13px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .a-hint { font-size: 11px; color: var(--accent); margin-top: 2px; }
-.btn-rm {
-  background: none; border: none; color: var(--muted);
-  font-size: 20px; padding: 2px; line-height: 1;
-  transition: color .15s;
-}
+.btn-rm { background: none; border: none; color: var(--muted); font-size: 20px; padding: 2px; line-height: 1; transition: color .15s; }
 .btn-rm:hover { color: var(--danger); }
-
 .input-box {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 14px; padding: 12px 14px;
-  display: flex; align-items: flex-end; gap: 8px;
-  transition: border-color .15s;
+  display: flex; align-items: flex-end; gap: 8px; transition: border-color .15s;
 }
 .input-box:focus-within { border-color: #555; }
 .input-box textarea {
-  flex: 1; min-width: 0; background: none; border: none;
-  outline: none; color: var(--text); font-size: 15px;
-  line-height: 1.6; resize: none; max-height: 160px;
-  overflow-y: auto; scrollbar-width: none;
-  font-family: 'Noto Sans Bengali', 'Inter', sans-serif;
+  flex: 1; min-width: 0; background: none; border: none; outline: none;
+  color: var(--text); font-size: 15px; line-height: 1.6; resize: none;
+  max-height: 160px; overflow-y: auto; scrollbar-width: none;
+  font-family:'Noto Sans Bengali','Inter',sans-serif;
 }
 .input-box textarea::-webkit-scrollbar { display: none; }
 .input-box textarea::placeholder { color: var(--muted); }
-
 .input-btns { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
-
 .btn-attach {
-  width: 34px; height: 34px; border-radius: 8px;
-  background: none; border: none; color: var(--muted);
-  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 8px; background: none; border: none;
+  color: var(--muted); display: flex; align-items: center; justify-content: center;
   transition: background .15s, color .15s;
 }
 .btn-attach:hover { background: var(--surface2); color: var(--text); }
-
 .btn-send {
   width: 34px; height: 34px; border-radius: 8px;
   background: var(--accent); border: none; color: white;
   display: flex; align-items: center; justify-content: center;
-  transition: background .15s, opacity .15s;
+  transition: background .15s;
 }
 .btn-send:hover:not(:disabled) { background: var(--accent-hover); }
 .btn-send:disabled { background: var(--surface2); cursor: not-allowed; }
+.input-hint { text-align: center; font-size: 11px; color: var(--muted); margin-top: 10px; }
 
-.input-hint {
-  text-align: center; font-size: 11px; color: var(--muted); margin-top: 10px;
+/* ════════════ MANAGE VIEW ════════════ */
+.manage-view {
+  flex: 1; overflow-y: auto; padding: 32px 24px;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.manage-inner { max-width: 760px; margin: 0 auto; }
+
+.manage-title {
+  font-size: 22px; font-weight: 600; margin-bottom: 4px;
+}
+.manage-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+/* Upload card */
+.upload-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; margin-bottom: 28px;
+}
+.upload-card-title {
+  font-size: 15px; font-weight: 600; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
 }
 
-#file-input { display: none; }
+.drop-zone {
+  border: 2px dashed var(--border); border-radius: 10px;
+  padding: 36px 24px; text-align: center; cursor: pointer;
+  transition: border-color .15s, background .15s; margin-bottom: 20px;
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--accent); background: var(--accent-dim);
+}
+.drop-zone-icon { font-size: 36px; margin-bottom: 10px; }
+.drop-zone-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.drop-zone-text strong { color: var(--accent); }
+.drop-zone-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.drop-zone.has-file { border-color: var(--accent); background: var(--accent-dim); }
+.drop-file-name {
+  font-size: 14px; font-weight: 500; color: var(--text);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.form-group input {
+  padding: 10px 12px; background: var(--main); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; color: var(--text); outline: none;
+  transition: border-color .15s;
+}
+.form-group input:focus { border-color: var(--accent); }
+.form-group input::placeholder { color: var(--muted); }
+
+.btn-upload {
+  width: 100%; padding: 12px; background: var(--accent); color: white;
+  border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+  transition: background .15s, opacity .15s; margin-top: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-upload:hover:not(:disabled) { background: var(--accent-hover); }
+.btn-upload:disabled { opacity: .5; cursor: not-allowed; }
+
+.upload-result {
+  margin-top: 14px; padding: 12px 14px; border-radius: 8px; font-size: 13px;
+}
+.upload-result.success {
+  background: rgba(16,163,127,.12); border: 1px solid rgba(16,163,127,.3); color: #34d399;
+}
+.upload-result.error {
+  background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); color: #fca5a5;
+}
+
+/* Knowledge list */
+.list-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+}
+.list-title { font-size: 16px; font-weight: 600; }
+.list-filter {
+  padding: 8px 12px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 13px; color: var(--text); outline: none;
+  min-width: 200px; transition: border-color .15s;
+}
+.list-filter:focus { border-color: var(--accent); }
+.list-filter::placeholder { color: var(--muted); }
+
+.k-list { display: flex; flex-direction: column; gap: 10px; }
+.k-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; transition: border-color .15s;
+}
+.k-card:hover { border-color: #555; }
+.k-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px;
+}
+.k-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.k-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 500;
+}
+.k-tag.disease { background: var(--accent-dim); color: #34d399; border: 1px solid rgba(16,163,127,.3); }
+.k-tag.crop    { background: rgba(245,158,11,.1); color: #fbbf24; border: 1px solid rgba(245,158,11,.25); }
+.k-date { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+.k-preview {
+  font-size: 13px; color: var(--muted); line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.k-source { font-size: 11px; color: var(--muted); margin-top: 8px; }
+.k-empty {
+  text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px;
+}
+.k-empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+.btn-refresh {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  padding: 7px 14px; border-radius: 8px; font-size: 13px;
+  display: flex; align-items: center; gap: 6px;
+  transition: background .15s, color .15s;
+}
+.btn-refresh:hover { background: var(--surface); color: var(--text); }
 
 /* Toast */
 .toast {
-  position: fixed; bottom: 100px; left: 50%;
-  transform: translateX(-50%);
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
   background: var(--surface2); color: var(--text);
   padding: 8px 18px; border-radius: 8px; font-size: 13px;
   opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 999;
 }
 .toast.show { opacity: 1; }
 
+#doc-file-input, #img-file-input { display: none; }
+
 /* Mobile */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed; left: 0; top: 0; bottom: 0;
-    transform: translateX(-100%);
-    box-shadow: 4px 0 20px rgba(0,0,0,.4);
+    transform: translateX(-100%); box-shadow: 4px 0 20px rgba(0,0,0,.4);
   }
   .sidebar.open { transform: translateX(0); }
   .mob-header { display: flex; }
@@ -420,12 +445,16 @@ textarea, input { font-family: inherit; }
   .chip-grid { grid-template-columns: 1fr; max-width: 100%; }
   .w-title { font-size: 20px; }
   .msg-row.user .m-body { max-width: 85%; }
+  .manage-view { padding: 20px 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .list-header { flex-direction: column; align-items: flex-start; }
+  .list-filter { min-width: 100%; }
 }
 </style>
 </head>
 <body>
 
-<div class="toast" id="toast">Copied!</div>
+<div class="toast" id="toast"></div>
 
 <!-- ══════════ LOGIN ══════════ -->
 <div id="loginPage" class="login-page">
@@ -451,7 +480,6 @@ textarea, input { font-family: inherit; }
 
 <!-- ══════════ APP ══════════ -->
 <div id="app" class="app" hidden>
-
   <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
   <!-- Sidebar -->
@@ -461,12 +489,25 @@ textarea, input { font-family: inherit; }
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         New chat
       </button>
-      <button class="btn-icon-sm" onclick="closeSidebar()" title="Close">
+      <button class="btn-icon-sm" onclick="closeSidebar()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    <div class="sidebar-label">Recent</div>
+    <!-- Nav: Chat + Manage (admin) -->
+    <div class="sidebar-nav" id="sidebarNav">
+      <button class="nav-item active" id="navChat" onclick="switchView('chat')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </button>
+      <button class="nav-item" id="navManage" onclick="switchView('manage')" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Manage RAG
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Recent chats</div>
     <div class="sidebar-list" id="historyList"></div>
 
     <div class="sidebar-bottom">
@@ -474,7 +515,7 @@ textarea, input { font-family: inherit; }
         <div class="user-av" id="userAv">A</div>
         <div class="user-info">
           <div class="u-email" id="uEmail">user@example.com</div>
-          <div class="u-role" id="uRole">Farmer</div>
+          <div class="u-role"  id="uRole">Farmer</div>
         </div>
         <button class="btn-logout" onclick="doLogout()" title="Log out">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -489,67 +530,131 @@ textarea, input { font-family: inherit; }
       <button class="btn-ham" onclick="openSidebar()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <div class="mob-title">ফসলের ডাক্তার</div>
-      <button class="btn-ham" onclick="newChat()">
+      <div class="mob-title" id="mobTitle">ফসলের ডাক্তার</div>
+      <button class="btn-ham" id="mobRight" onclick="newChat()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </button>
     </div>
 
-    <div class="messages" id="messages">
-      <div id="welcomeScreen" class="welcome-screen">
-        <div class="w-logo">🌿</div>
-        <div class="w-title">ফসলের ডাক্তার</div>
-        <div class="w-sub">আপনার ফসলের রোগ চিহ্নিত করুন। ছবি আপলোড করুন অথবা প্রশ্ন করুন।</div>
-        <div class="chip-grid">
-          <button class="chip-card" onclick="quickAsk('আমার ধানের পাতায় বাদামী দাগ হচ্ছে, কী করা উচিত?')">
-            <span class="chip-icon">🌾</span><span>ধানের পাতায় বাদামী দাগ</span>
-          </button>
-          <button class="chip-card" onclick="quickAsk('গমে হলুদ মরিচা রোগ দেখা যাচ্ছে')">
-            <span class="chip-icon">🌿</span><span>গমে হলুদ মরিচা রোগ</span>
-          </button>
-          <button class="chip-card" onclick="quickAsk('আমার আলুর পাতা কালো হয়ে মরে যাচ্ছে')">
-            <span class="chip-icon">🥔</span><span>আলুর পাতা কালো হওয়া</span>
-          </button>
-          <button class="chip-card" onclick="quickAsk('ভুট্টা গাছে কমলা রঙের মরিচা, চিকিৎসা কী?')">
-            <span class="chip-icon">🌽</span><span>ভুট্টার কমলা মরিচা</span>
-          </button>
+    <!-- ── Chat view ── -->
+    <div class="chat-view" id="chatView">
+      <div class="messages" id="messages">
+        <div id="welcomeScreen" class="welcome-screen">
+          <div class="w-logo">🌿</div>
+          <div class="w-title">ফসলের ডাক্তার</div>
+          <div class="w-sub">আপনার ফসলের রোগ চিহ্নিত করুন। ছবি আপলোড করুন অথবা প্রশ্ন করুন।</div>
+          <div class="chip-grid">
+            <button class="chip-card" onclick="quickAsk('আমার ধানের পাতায় বাদামী দাগ হচ্ছে, কী করা উচিত?')">
+              <span class="chip-icon">🌾</span><span>ধানের পাতায় বাদামী দাগ</span>
+            </button>
+            <button class="chip-card" onclick="quickAsk('গমে হলুদ মরিচা রোগ দেখা যাচ্ছে')">
+              <span class="chip-icon">🌿</span><span>গমে হলুদ মরিচা রোগ</span>
+            </button>
+            <button class="chip-card" onclick="quickAsk('আমার আলুর পাতা কালো হয়ে মরে যাচ্ছে')">
+              <span class="chip-icon">🥔</span><span>আলুর পাতা কালো হওয়া</span>
+            </button>
+            <button class="chip-card" onclick="quickAsk('ভুট্টা গাছে কমলা রঙের মরিচা, চিকিৎসা কী?')">
+              <span class="chip-icon">🌽</span><span>ভুট্টার কমলা মরিচা</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-wrap">
+        <div class="input-inner">
+          <div class="attach-preview" id="attachPreview" hidden>
+            <img id="attachThumb" src="" alt="">
+            <div class="a-info">
+              <div class="a-name" id="attachName">photo.jpg</div>
+              <div class="a-hint">🔍 AI রোগ শনাক্ত করবে</div>
+            </div>
+            <button class="btn-rm" onclick="removeAttach()">×</button>
+          </div>
+          <div class="input-box">
+            <textarea id="msgInput" rows="1"
+              placeholder="আপনার ফসলের সমস্যা লিখুন..."
+              onkeydown="handleKey(event)"
+              oninput="autoResize(this); updateSend();"
+            ></textarea>
+            <div class="input-btns">
+              <button class="btn-attach" onclick="document.getElementById('img-file-input').click()" title="Upload leaf photo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+              <button class="btn-send" id="sendBtn" onclick="sendMessage()" disabled>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="input-hint">ফসলের ছবি আপলোড করুন অথবা সমস্যা লিখুন</div>
         </div>
       </div>
     </div>
 
-    <!-- Input -->
-    <div class="input-wrap">
-      <div class="input-inner">
-        <div class="attach-preview" id="attachPreview" hidden>
-          <img id="attachThumb" src="" alt="">
-          <div class="a-info">
-            <div class="a-name" id="attachName">photo.jpg</div>
-            <div class="a-hint">🔍 AI রোগ শনাক্ত করবে</div>
+    <!-- ── Manage view (admin only) ── -->
+    <div class="manage-view" id="manageView" hidden>
+      <div class="manage-inner">
+        <div class="manage-title">📁 Manage RAG Knowledge Base</div>
+        <div class="manage-sub">Upload disease documents to improve AI responses.</div>
+
+        <!-- Upload card -->
+        <div class="upload-card">
+          <div class="upload-card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Document
           </div>
-          <button class="btn-rm" onclick="removeAttach()">×</button>
+
+          <div class="drop-zone" id="dropZone"
+            onclick="document.getElementById('doc-file-input').click()"
+            ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)"
+          >
+            <div class="drop-zone-icon">📄</div>
+            <div class="drop-zone-text"><strong>Click to browse</strong> or drag & drop</div>
+            <div class="drop-zone-hint">PDF, TXT — disease knowledge documents</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Disease Name *</label>
+              <input type="text" id="diseaseName" placeholder="e.g. Rice Blast">
+            </div>
+            <div class="form-group">
+              <label>Crop Name *</label>
+              <input type="text" id="cropName" placeholder="e.g. Rice">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Source (optional)</label>
+            <input type="text" id="sourceUrl" placeholder="e.g. BRRI 2024 field guide">
+          </div>
+
+          <button class="btn-upload" id="uploadBtn" onclick="uploadDocument()" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload & Process
+          </button>
+          <div id="uploadResult" hidden></div>
         </div>
-        <div class="input-box">
-          <textarea id="msgInput" rows="1"
-            placeholder="আপনার ফসলের সমস্যা লিখুন..."
-            onkeydown="handleKey(event)"
-            oninput="autoResize(this); updateSend();"
-          ></textarea>
-          <div class="input-btns">
-            <button class="btn-attach" onclick="document.getElementById('file-input').click()" title="Upload leaf photo">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </button>
-            <button class="btn-send" id="sendBtn" onclick="sendMessage()" disabled>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+
+        <!-- Knowledge list -->
+        <div class="list-header">
+          <div class="list-title">Knowledge Entries <span id="kCount" style="color:var(--muted);font-weight:400;font-size:14px"></span></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input class="list-filter" id="filterInput" placeholder="Filter by disease name…" oninput="filterKnowledge()">
+            <button class="btn-refresh" onclick="loadKnowledge()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
             </button>
           </div>
         </div>
-        <div class="input-hint">ফসলের ছবি আপলোড করুন অথবা সমস্যা লিখুন</div>
+        <div class="k-list" id="kList">
+          <div class="k-empty"><div class="k-empty-icon">📭</div>No entries yet.</div>
+        </div>
       </div>
     </div>
   </main>
 </div>
 
-<input type="file" id="file-input" accept="image/*" onchange="onFile(event)">
+<input type="file" id="doc-file-input" accept=".pdf,.txt,.md" onchange="onDocFile(event)">
+<input type="file" id="img-file-input" accept="image/*" onchange="onImgFile(event)">
 
 <script>
 const API = 'http://localhost:8000';
@@ -557,9 +662,12 @@ const API = 'http://localhost:8000';
 let token = '';
 let userInfo = { email: '', role: '' };
 let history = [];
-let attachedFile = null;
+let attachedImg = null;
+let docFile = null;
 let isLoading = false;
 let chatSessions = [];
+let allKnowledge = [];
+let currentView = 'chat';
 
 (function init() {
   try {
@@ -570,25 +678,17 @@ let chatSessions = [];
   if (token) showApp();
 })();
 
-function updateSend() {
-  const v = document.getElementById('msgInput').value.trim();
-  document.getElementById('sendBtn').disabled = !v && !attachedFile;
-}
-
-/* ── Auth ── */
+/* ════════════ AUTH ════════════ */
 async function doLogin() {
   const email = document.getElementById('email').value.trim();
-  const pw = document.getElementById('password').value;
-  const btn = document.getElementById('loginBtn');
+  const pw    = document.getElementById('password').value;
+  const btn   = document.getElementById('loginBtn');
   document.getElementById('loginErr').hidden = true;
-
   if (!email || !pw) { showLoginErr('Email এবং password দিন।'); return; }
   btn.disabled = true; btn.textContent = 'Signing in…';
-
   try {
     const r = await fetch(`${API}/api/v1/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pw })
     });
     const d = await r.json();
@@ -598,10 +698,7 @@ async function doLogin() {
       const payload = JSON.parse(atob(token.split('.')[1]));
       userInfo = { email: payload.sub || email, role: payload.role || 'user' };
     } catch(e) { userInfo = { email, role: 'user' }; }
-    try {
-      localStorage.setItem('fd_token', token);
-      localStorage.setItem('fd_user', JSON.stringify(userInfo));
-    } catch(e) {}
+    try { localStorage.setItem('fd_token', token); localStorage.setItem('fd_user', JSON.stringify(userInfo)); } catch(e) {}
     showApp();
   } catch(e) {
     showLoginErr(e.message || 'সংযোগ ব্যর্থ হয়েছে। Backend চালু আছে কিনা দেখুন।');
@@ -609,17 +706,13 @@ async function doLogin() {
   }
 }
 
-function showLoginErr(msg) {
-  const el = document.getElementById('loginErr');
-  el.textContent = msg; el.hidden = false;
-}
+function showLoginErr(m) { const el = document.getElementById('loginErr'); el.textContent = m; el.hidden = false; }
 
 function doLogout() {
-  token = ''; history = []; attachedFile = null;
+  token = ''; history = []; attachedImg = null; docFile = null;
   try { localStorage.removeItem('fd_token'); } catch(e) {}
   document.getElementById('app').hidden = true;
   document.getElementById('loginPage').hidden = false;
-  document.getElementById('loginErr').hidden = true;
   document.getElementById('password').value = '';
 }
 
@@ -627,20 +720,29 @@ function showApp() {
   document.getElementById('loginPage').hidden = true;
   document.getElementById('app').hidden = false;
   document.getElementById('uEmail').textContent = userInfo.email || 'User';
-  document.getElementById('uRole').textContent = userInfo.role === 'admin' ? 'Admin' : 'Farmer';
-  document.getElementById('userAv').textContent = (userInfo.email || 'U')[0].toUpperCase();
+  document.getElementById('uRole').textContent  = userInfo.role === 'admin' ? 'Admin' : 'Farmer';
+  document.getElementById('userAv').textContent  = (userInfo.email || 'U')[0].toUpperCase();
+  if (userInfo.role === 'admin') document.getElementById('navManage').hidden = false;
   renderHistory();
+  switchView('chat');
 }
 
-/* ── Sidebar ── */
-function openSidebar() {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('overlay').classList.add('show');
+/* ════════════ NAVIGATION ════════════ */
+function switchView(view) {
+  currentView = view;
+  document.getElementById('chatView').hidden   = view !== 'chat';
+  document.getElementById('manageView').hidden  = view !== 'manage';
+  document.getElementById('navChat').classList.toggle('active',   view === 'chat');
+  document.getElementById('navManage').classList.toggle('active', view === 'manage');
+  document.getElementById('mobTitle').textContent = view === 'manage' ? 'Manage RAG' : 'ফসলের ডাক্তার';
+  document.getElementById('mobRight').hidden = view === 'manage';
+  if (view === 'manage') loadKnowledge();
+  closeSidebar();
 }
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-}
+
+/* ════════════ SIDEBAR ════════════ */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
 
 function renderHistory() {
   const list = document.getElementById('historyList');
@@ -649,16 +751,17 @@ function renderHistory() {
     const el = document.createElement('div');
     el.className = 's-item';
     el.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${s.title}</span>`;
+    el.onclick = () => { switchView('chat'); closeSidebar(); };
     list.appendChild(el);
   });
 }
 
-/* ── New chat ── */
+/* ════════════ CHAT ════════════ */
 function newChat() {
-  history = []; attachedFile = null; removeAttach();
+  history = []; attachedImg = null; removeAttach();
   document.getElementById('messages').innerHTML = '';
   document.getElementById('messages').appendChild(buildWelcome());
-  closeSidebar();
+  switchView('chat');
 }
 
 function buildWelcome() {
@@ -669,26 +772,21 @@ function buildWelcome() {
     <div class="w-title">ফসলের ডাক্তার</div>
     <div class="w-sub">আপনার ফসলের রোগ চিহ্নিত করুন। ছবি আপলোড করুন অথবা প্রশ্ন করুন।</div>
     <div class="chip-grid">
-      <button class="chip-card" onclick="quickAsk('আমার ধানের পাতায় বাদামী দাগ হচ্ছে, কী করা উচিত?')">
-        <span class="chip-icon">🌾</span><span>ধানের পাতায় বাদামী দাগ</span>
-      </button>
-      <button class="chip-card" onclick="quickAsk('গমে হলুদ মরিচা রোগ দেখা যাচ্ছে')">
-        <span class="chip-icon">🌿</span><span>গমে হলুদ মরিচা রোগ</span>
-      </button>
-      <button class="chip-card" onclick="quickAsk('আমার আলুর পাতা কালো হয়ে মরে যাচ্ছে')">
-        <span class="chip-icon">🥔</span><span>আলুর পাতা কালো হওয়া</span>
-      </button>
-      <button class="chip-card" onclick="quickAsk('ভুট্টা গাছে কমলা রঙের মরিচা, চিকিৎসা কী?')">
-        <span class="chip-icon">🌽</span><span>ভুট্টার কমলা মরিচা</span>
-      </button>
+      <button class="chip-card" onclick="quickAsk('আমার ধানের পাতায় বাদামী দাগ হচ্ছে, কী করা উচিত?')"><span class="chip-icon">🌾</span><span>ধানের পাতায় বাদামী দাগ</span></button>
+      <button class="chip-card" onclick="quickAsk('গমে হলুদ মরিচা রোগ দেখা যাচ্ছে')"><span class="chip-icon">🌿</span><span>গমে হলুদ মরিচা রোগ</span></button>
+      <button class="chip-card" onclick="quickAsk('আমার আলুর পাতা কালো হয়ে মরে যাচ্ছে')"><span class="chip-icon">🥔</span><span>আলুর পাতা কালো হওয়া</span></button>
+      <button class="chip-card" onclick="quickAsk('ভুট্টা গাছে কমলা রঙের মরিচা, চিকিৎসা কী?')"><span class="chip-icon">🌽</span><span>ভুট্টার কমলা মরিচা</span></button>
     </div>`;
   return el;
 }
 
-/* ── File ── */
-function onFile(e) {
+function updateSend() {
+  document.getElementById('sendBtn').disabled = !document.getElementById('msgInput').value.trim() && !attachedImg;
+}
+
+function onImgFile(e) {
   const file = e.target.files[0]; if (!file) return;
-  attachedFile = file;
+  attachedImg = file;
   document.getElementById('attachThumb').src = URL.createObjectURL(file);
   document.getElementById('attachName').textContent = file.name;
   document.getElementById('attachPreview').hidden = false;
@@ -697,168 +795,220 @@ function onFile(e) {
 }
 
 function removeAttach() {
-  attachedFile = null;
+  attachedImg = null;
   document.getElementById('attachPreview').hidden = true;
   document.getElementById('attachThumb').src = '';
   updateSend();
 }
 
-/* ── Send ── */
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
-}
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
 
 async function sendMessage() {
   const input = document.getElementById('msgInput');
   const text = input.value.trim();
-  if ((!text && !attachedFile) || isLoading) return;
-
+  if ((!text && !attachedImg) || isLoading) return;
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
-
-  const ws = document.getElementById('welcomeScreen');
-  if (ws) ws.remove();
-
-  const file = attachedFile;
-  const userText = text;
-  input.value = ''; input.style.height = 'auto';
-  removeAttach();
-
+  const ws = document.getElementById('welcomeScreen'); if (ws) ws.remove();
+  const file = attachedImg, userText = text;
+  input.value = ''; input.style.height = 'auto'; removeAttach();
   appendUserMsg(userText, file);
   history.push({ role: 'user', content: userText || '📷 ছবি' });
-
-  const typingId = appendTyping();
-
+  const tid = appendTyping();
   try {
     const fd = new FormData();
     fd.append('message', userText);
     fd.append('history', JSON.stringify(history.slice(0, -1)));
     if (file) fd.append('image', file, file.name);
-
     const res = await fetch(`${API}/api/v1/chat/`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${token}` },
-      body: fd
+      method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
     });
-
-    removeEl(typingId);
-
+    removeEl(tid);
     if (res.status === 401) { doLogout(); return; }
-    if (!res.ok) {
-      const er = await res.json().catch(() => ({}));
-      throw new Error(er.detail || `Error ${res.status}`);
-    }
-
+    if (!res.ok) { const er = await res.json().catch(()=>({})); throw new Error(er.detail || `Error ${res.status}`); }
     const data = await res.json();
     appendBotMsg(data);
     history.push({ role: 'assistant', content: data.reply });
-
     if (history.length === 2) {
       chatSessions.push({ title: (userText || 'Image chat').slice(0, 42), ts: Date.now() });
       try { localStorage.setItem('fd_sessions', JSON.stringify(chatSessions)); } catch(e) {}
       renderHistory();
     }
   } catch(e) {
-    removeEl(typingId);
+    removeEl(tid);
     appendBotMsg({ reply: `⚠️ সমস্যা হয়েছে: ${e.message}`, sources_used: false });
   }
-
-  isLoading = false;
-  updateSend();
-  scrollBottom();
+  isLoading = false; updateSend(); scrollBottom();
 }
 
-function quickAsk(text) {
-  document.getElementById('msgInput').value = text;
-  document.getElementById('sendBtn').disabled = false;
-  sendMessage();
-}
+function quickAsk(text) { document.getElementById('msgInput').value = text; updateSend(); sendMessage(); }
 
-/* ── DOM builders ── */
 function appendUserMsg(text, file) {
-  const wrap = mk('div', 'msg-wrapper');
-  const row = mk('div', 'msg-row user');
-  const av = mk('div', 'm-av');
-  av.textContent = (userInfo.email || 'U')[0].toUpperCase();
-  const body = mk('div', 'm-body');
-
-  if (file) {
-    const imgBox = mk('div', 'm-img');
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    imgBox.appendChild(img); body.appendChild(imgBox);
-  }
-  if (text) {
-    const t = mk('div', 'm-text'); t.textContent = text; body.appendChild(t);
-  }
-
-  row.appendChild(body); row.appendChild(av);
-  wrap.appendChild(row); msgs().appendChild(wrap);
-  scrollBottom();
+  const wrap = mk('div','msg-wrapper'), row = mk('div','msg-row user');
+  const av = mk('div','m-av'); av.textContent = (userInfo.email||'U')[0].toUpperCase();
+  const body = mk('div','m-body');
+  if (file) { const b=mk('div','m-img'); const i=document.createElement('img'); i.src=URL.createObjectURL(file); b.appendChild(i); body.appendChild(b); }
+  if (text) { const t=mk('div','m-text'); t.textContent=text; body.appendChild(t); }
+  row.appendChild(body); row.appendChild(av); wrap.appendChild(row); msgs().appendChild(wrap); scrollBottom();
 }
 
 function appendBotMsg(data) {
-  const wrap = mk('div', 'msg-wrapper');
-  const row = mk('div', 'msg-row bot');
-  const av = mk('div', 'm-av'); av.textContent = '🌿';
-  const body = mk('div', 'm-body');
-
-  const name = mk('div', 'm-name'); name.textContent = 'ফসলের ডাক্তার';
-  body.appendChild(name);
-
+  const wrap=mk('div','msg-wrapper'), row=mk('div','msg-row bot');
+  const av=mk('div','m-av'); av.textContent='🌿';
+  const body=mk('div','m-body');
+  const name=mk('div','m-name'); name.textContent='ফসলের ডাক্তার'; body.appendChild(name);
   if (data.disease_detected) {
-    const pill = mk('div', 'disease-pill');
-    const conf = data.confidence ? ` · ${(data.confidence * 100).toFixed(0)}%` : '';
-    pill.textContent = `🔬 ${data.disease_detected.replace(/_/g, ' ')}${conf}`;
-    body.appendChild(pill);
+    const p=mk('div','disease-pill');
+    p.textContent=`🔬 ${data.disease_detected.replace(/_/g,' ')}${data.confidence?' · '+(data.confidence*100).toFixed(0)+'%':''}`;
+    body.appendChild(p);
   }
-
-  const t = mk('div', 'm-text'); t.textContent = data.reply;
-  body.appendChild(t);
-
-  const acts = mk('div', 'm-actions');
-  const copyBtn = mk('button', 'm-act-btn');
-  copyBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
-  copyBtn.onclick = () => {
-    navigator.clipboard.writeText(data.reply).then(() => showToast('Copied!')).catch(() => {});
-  };
-  acts.appendChild(copyBtn); body.appendChild(acts);
-
-  row.appendChild(av); row.appendChild(body);
-  wrap.appendChild(row); msgs().appendChild(wrap);
+  const t=mk('div','m-text'); t.textContent=data.reply; body.appendChild(t);
+  const acts=mk('div','m-actions'), cb=mk('button','m-act-btn');
+  cb.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
+  cb.onclick=()=>{ navigator.clipboard.writeText(data.reply).then(()=>showToast('Copied!')).catch(()=>{}); };
+  acts.appendChild(cb); body.appendChild(acts);
+  row.appendChild(av); row.appendChild(body); wrap.appendChild(row); msgs().appendChild(wrap);
 }
 
 function appendTyping() {
-  const id = 'typing-' + Date.now();
-  const wrap = mk('div', 'msg-wrapper'); wrap.id = id;
-  const row = mk('div', 'typing-row');
-  const av = mk('div', 'm-av'); av.style.cssText = 'width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;';
-  av.textContent = '🌿';
-  const dots = mk('div', 'typing-dots');
-  for (let i = 0; i < 3; i++) dots.appendChild(mk('div', 'dot'));
-  row.appendChild(av); row.appendChild(dots);
-  wrap.appendChild(row); msgs().appendChild(wrap);
-  scrollBottom(); return id;
+  const id='typing-'+Date.now(), wrap=mk('div','msg-wrapper'); wrap.id=id;
+  const row=mk('div','typing-row');
+  const av=mk('div','m-av'); av.style.cssText='width:32px;height:32px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;'; av.textContent='🌿';
+  const dots=mk('div','typing-dots'); for(let i=0;i<3;i++) dots.appendChild(mk('div','dot'));
+  row.appendChild(av); row.appendChild(dots); wrap.appendChild(row); msgs().appendChild(wrap); scrollBottom(); return id;
 }
 
+/* ════════════ MANAGE / RAG ════════════ */
+function onDocFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  docFile = file;
+  const dz = document.getElementById('dropZone');
+  dz.classList.add('has-file');
+  dz.innerHTML = `<div class="drop-file-name">📄 ${file.name}</div><div class="drop-zone-hint" style="margin-top:8px">Click to change file</div>`;
+  document.getElementById('uploadBtn').disabled = false;
+  e.target.value = '';
+}
+
+function onDragOver(e)  { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function onDragLeave(e) { document.getElementById('dropZone').classList.remove('drag-over'); }
+function onDrop(e) {
+  e.preventDefault(); document.getElementById('dropZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0]; if (!file) return;
+  docFile = file;
+  const dz = document.getElementById('dropZone');
+  dz.classList.add('has-file');
+  dz.innerHTML = `<div class="drop-file-name">📄 ${file.name}</div><div class="drop-zone-hint" style="margin-top:8px">Click to change file</div>`;
+  document.getElementById('uploadBtn').disabled = false;
+}
+
+async function uploadDocument() {
+  const disease = document.getElementById('diseaseName').value.trim();
+  const crop    = document.getElementById('cropName').value.trim();
+  const source  = document.getElementById('sourceUrl').value.trim();
+  const result  = document.getElementById('uploadResult');
+
+  if (!docFile)   { showUploadResult('error', 'Please select a document file.'); return; }
+  if (!disease)   { showUploadResult('error', 'Disease name is required.'); return; }
+  if (!crop)      { showUploadResult('error', 'Crop name is required.'); return; }
+
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true; btn.innerHTML = `<span>Uploading…</span>`;
+
+  try {
+    const fd = new FormData();
+    fd.append('file', docFile, docFile.name);
+    fd.append('disease_name', disease);
+    fd.append('crop_name', crop);
+    if (source) fd.append('source', source);
+
+    const res = await fetch(`${API}/api/v1/knowledge/upload-document`, {
+      method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || `Error ${res.status}`);
+
+    const count = Array.isArray(data) ? data.length : 1;
+    showUploadResult('success', `✅ Uploaded successfully! Created ${count} knowledge chunk${count>1?'s':''}.`);
+    docFile = null;
+    resetDropZone();
+    document.getElementById('diseaseName').value = '';
+    document.getElementById('cropName').value = '';
+    document.getElementById('sourceUrl').value = '';
+    loadKnowledge();
+  } catch(e) {
+    showUploadResult('error', `❌ Upload failed: ${e.message}`);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload & Process`;
+}
+
+function resetDropZone() {
+  const dz = document.getElementById('dropZone');
+  dz.classList.remove('has-file');
+  dz.innerHTML = `<div class="drop-zone-icon">📄</div><div class="drop-zone-text"><strong>Click to browse</strong> or drag & drop</div><div class="drop-zone-hint">PDF, TXT — disease knowledge documents</div>`;
+  document.getElementById('uploadBtn').disabled = true;
+}
+
+function showUploadResult(type, msg) {
+  const el = document.getElementById('uploadResult');
+  el.className = `upload-result ${type}`; el.textContent = msg; el.hidden = false;
+  if (type === 'success') setTimeout(() => { el.hidden = true; }, 5000);
+}
+
+async function loadKnowledge() {
+  document.getElementById('kList').innerHTML = '<div class="k-empty"><div class="k-empty-icon">⏳</div>Loading…</div>';
+  try {
+    const res = await fetch(`${API}/api/v1/knowledge/`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+    allKnowledge = await res.json();
+    document.getElementById('kCount').textContent = `(${allKnowledge.length})`;
+    renderKnowledge(allKnowledge);
+  } catch(e) {
+    document.getElementById('kList').innerHTML = `<div class="k-empty"><div class="k-empty-icon">⚠️</div>${e.message}</div>`;
+  }
+}
+
+function filterKnowledge() {
+  const q = document.getElementById('filterInput').value.trim().toLowerCase();
+  const filtered = q ? allKnowledge.filter(k => k.disease_name.toLowerCase().includes(q) || k.crop_name.toLowerCase().includes(q)) : allKnowledge;
+  renderKnowledge(filtered);
+}
+
+function renderKnowledge(list) {
+  const container = document.getElementById('kList');
+  if (!list.length) {
+    container.innerHTML = '<div class="k-empty"><div class="k-empty-icon">📭</div>No entries found.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  list.forEach(k => {
+    const card = mk('div', 'k-card');
+    const date = new Date(k.created_at).toLocaleDateString('en-BD', { year:'numeric', month:'short', day:'numeric' });
+    card.innerHTML = `
+      <div class="k-card-top">
+        <div class="k-tags">
+          <span class="k-tag disease">🔬 ${k.disease_name}</span>
+          <span class="k-tag crop">🌾 ${k.crop_name}</span>
+        </div>
+        <span class="k-date">${date}</span>
+      </div>
+      <div class="k-preview">${k.content}</div>
+      ${k.source ? `<div class="k-source">Source: ${k.source}</div>` : ''}`;
+    container.appendChild(card);
+  });
+}
+
+/* ════════════ HELPERS ════════════ */
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 1800);
 }
-
 function removeEl(id) { const el = document.getElementById(id); if (el) el.remove(); }
 function mk(tag, cls) { const el = document.createElement(tag); el.className = cls; return el; }
 function msgs() { return document.getElementById('messages'); }
-function scrollBottom() {
-  const m = msgs();
-  requestAnimationFrame(() => { m.scrollTop = m.scrollHeight; });
-}
+function scrollBottom() { const m = msgs(); requestAnimationFrame(() => { m.scrollTop = m.scrollHeight; }); }
 
 document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('password').focus(); });
