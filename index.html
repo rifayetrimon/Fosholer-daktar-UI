@@ -761,22 +761,27 @@ let chatSessions = [], allKnowledge = [], currentView = 'chat';
   wakeBackend();
 })();
 
-async function wakeBackend() {
+async function wakeBackend(attempt) {
+  attempt = attempt || 1;
   const banner = document.getElementById('backendBanner');
   banner.className = 'backend-banner waking';
   banner.innerHTML = '⏳ Connecting to server…';
   banner.hidden = false;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 40000);
   try {
-    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(30000) });
+    const r = await fetch(`${API}/health`, { signal: controller.signal });
+    clearTimeout(timer);
     if (r.ok) { banner.hidden = true; return; }
     throw new Error(`HTTP ${r.status}`);
   } catch(e) {
-    if (e.name === 'TimeoutError' || e.name === 'AbortError') {
-      banner.className = 'backend-banner error';
-      banner.innerHTML = '⚠️ Server is starting up — please wait a moment and try again.';
+    clearTimeout(timer);
+    if (attempt < 3) {
+      setTimeout(() => wakeBackend(attempt + 1), 5000);
     } else {
       banner.className = 'backend-banner error';
-      banner.innerHTML = '⚠️ Cannot reach server. Check your connection or try refreshing.';
+      banner.innerHTML = '⚠️ Server not responding. You can still try sending a message — it may start up shortly.';
     }
   }
 }
