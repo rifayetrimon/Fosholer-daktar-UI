@@ -787,6 +787,11 @@ function saveUserConversations() {
         signal: ctrl.signal
       });
       clearTimeout(tid);
+      if (r.status === 401) {
+        // Token expired — clear storage and show login
+        try { localStorage.removeItem('fd_token'); localStorage.removeItem('fd_user'); } catch(e) {}
+        return;
+      }
       if (r.ok) {
         const mu = await r.json();
         userInfo.full_name = mu.full_name || userInfo.full_name;
@@ -895,6 +900,17 @@ function showApp() {
   loadUserConversations();
   renderHistory();
   switchView('chat');
+}
+
+function handleApiResponse(res) {
+  if (res.status === 401) {
+    try { localStorage.removeItem('fd_token'); localStorage.removeItem('fd_user'); } catch(e) {}
+    token = ''; userInfo = {};
+    document.getElementById('app').hidden = true;
+    document.getElementById('loginPage').hidden = false;
+    throw new Error('Session expired. Please log in again.');
+  }
+  return res;
 }
 
 /* Navigation */
@@ -1127,9 +1143,9 @@ async function uploadDocument() {
     const fd = new FormData();
     fd.append('file', docFile, docFile.name);
     if (source) fd.append('source', source);
-    const res = await fetch(`${API}/api/v1/knowledge/upload-document`, {
+    const res = handleApiResponse(await fetch(`${API}/api/v1/knowledge/upload-document`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
-    });
+    }));
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || `Error ${res.status}`);
     const count = Array.isArray(data) ? data.length : 1;
