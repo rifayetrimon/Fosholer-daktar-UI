@@ -1142,6 +1142,8 @@ async function uploadDocument() {
   try {
     const fd = new FormData();
     fd.append('file', docFile, docFile.name);
+    fd.append('disease_name', 'General Guide');
+    fd.append('crop_name', 'Multiple');
     if (source) fd.append('source', source);
     const res = handleApiResponse(await fetch(`${API}/api/v1/knowledge/upload-document`, {
       method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: fd
