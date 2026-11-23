@@ -445,6 +445,25 @@ textarea, input { font-family: inherit; }
 .upload-result.success { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; }
 .upload-result.error   { background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; }
 
+/* Upload file queue */
+.file-queue { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.fq-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface); font-size: 13px;
+}
+.fq-icon { font-size: 20px; flex-shrink: 0; }
+.fq-info { flex: 1; min-width: 0; }
+.fq-name { font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fq-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.fq-badge {
+  flex-shrink: 0; font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; white-space: nowrap;
+}
+.fq-badge.processing { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.fq-badge.ready      { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.fq-badge.failed     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
 /* Knowledge list */
 .list-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -707,7 +726,15 @@ textarea, input { font-family: inherit; }
           <div id="uploadResult" hidden></div>
         </div>
 
-        <div class="list-header">
+        <!-- Uploaded files queue -->
+        <div id="fileQueue" hidden>
+          <div class="list-header" style="margin-top:24px;margin-bottom:10px">
+            <div class="list-title">Uploaded Files</div>
+          </div>
+          <div class="file-queue" id="fileQueueList"></div>
+        </div>
+
+        <div class="list-header" style="margin-top:24px">
           <div class="list-title">Knowledge Entries <span id="kCount" style="color:var(--muted);font-weight:400;font-size:14px"></span></div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <input class="list-filter" id="filterInput" placeholder="Filter by disease or crop…" oninput="filterKnowledge()">
@@ -734,6 +761,7 @@ let token = '', userInfo = { email: '', role: '' }, history = [];
 let attachedImg = null, docFile = null, isLoading = false;
 let chatSessions = [], allKnowledge = [], currentView = 'chat';
 let currentConvId = null;
+let uploadedFiles = [];
 
 function convKey() { return `fd_convs_${userInfo.email || 'guest'}`; }
 
@@ -1087,6 +1115,14 @@ async function uploadDocument() {
   if (!docFile) { showUploadResult('error', 'Please select a document file.'); return; }
   const btn = document.getElementById('uploadBtn');
   btn.disabled = true; btn.innerHTML = '<span>Uploading…</span>';
+
+  // Add to queue as processing
+  const qId = Date.now();
+  const fileName = docFile.name;
+  const fileSize = (docFile.size / 1024).toFixed(1) + ' KB';
+  uploadedFiles.unshift({ id: qId, name: fileName, size: fileSize, source: source || '', status: 'processing', chunks: 0, time: new Date().toLocaleTimeString() });
+  renderFileQueue();
+
   try {
     const fd = new FormData();
     fd.append('file', docFile, docFile.name);
@@ -1097,15 +1133,40 @@ async function uploadDocument() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || `Error ${res.status}`);
     const count = Array.isArray(data) ? data.length : 1;
+    updateFileQueue(qId, 'ready', count);
     showUploadResult('success', `Uploaded successfully! Created ${count} knowledge chunk${count>1?'s':''}.`);
     docFile = null; resetDropZone();
     document.getElementById('sourceUrl').value = '';
     loadKnowledge();
   } catch(e) {
+    updateFileQueue(qId, 'failed', 0);
     showUploadResult('error', `Upload failed: ${e.message}`);
   }
   btn.disabled = false;
   btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload & Process`;
+}
+
+function renderFileQueue() {
+  const wrap = document.getElementById('fileQueue');
+  const list = document.getElementById('fileQueueList');
+  if (!uploadedFiles.length) { wrap.hidden = true; return; }
+  wrap.hidden = false;
+  list.innerHTML = uploadedFiles.map(f => `
+    <div class="fq-item">
+      <div class="fq-icon">${f.name.endsWith('.pdf') ? '📄' : '📝'}</div>
+      <div class="fq-info">
+        <div class="fq-name">${f.name}</div>
+        <div class="fq-meta">${f.size}${f.source ? ' · ' + f.source : ''} · ${f.time}${f.chunks ? ' · ' + f.chunks + ' chunks' : ''}</div>
+      </div>
+      <span class="fq-badge ${f.status}">${f.status === 'processing' ? '⏳ Processing…' : f.status === 'ready' ? '✅ Ready' : '❌ Failed'}</span>
+    </div>
+  `).join('');
+}
+
+function updateFileQueue(id, status, chunks) {
+  const f = uploadedFiles.find(x => x.id === id);
+  if (f) { f.status = status; f.chunks = chunks; }
+  renderFileQueue();
 }
 
 function resetDropZone() {
