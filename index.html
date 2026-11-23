@@ -1051,7 +1051,7 @@ function loadConversation(id) {
   const conv = chatSessions.find(s => s.id === id);
   if (!conv) return;
   currentConvId = id;
-  history = (conv.messages || []).map(m => ({ role: m.role, content: m.content }));
+  history = (conv.messages || []).map(m => ({ ...m }));
   const msgsEl = document.getElementById('messages');
   msgsEl.innerHTML = '';
   history.forEach(m => {
