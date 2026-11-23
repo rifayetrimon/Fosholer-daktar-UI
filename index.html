@@ -487,19 +487,6 @@ textarea, input { font-family: inherit; }
 .k-empty { text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px; }
 .k-empty-icon { font-size: 36px; margin-bottom: 10px; }
 
-/* Backend status banner */
-.backend-banner {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  padding: 10px 16px; font-size: 13px; font-weight: 500;
-  text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.backend-banner.waking {
-  background: var(--amber-bg); color: #92400e; border-bottom: 1px solid var(--amber-border);
-}
-.backend-banner.error {
-  background: #fee2e2; color: #991b1b; border-bottom: 1px solid #fca5a5;
-}
-
 /* Toast */
 .toast {
   position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
@@ -534,7 +521,6 @@ textarea, input { font-family: inherit; }
 <body>
 
 <div class="toast" id="toast"></div>
-<div id="backendBanner" hidden></div>
 
 <!-- ══════════ LOGIN ══════════ -->
 <div id="loginPage" class="login-page">
@@ -758,33 +744,7 @@ let chatSessions = [], allKnowledge = [], currentView = 'chat';
     chatSessions = JSON.parse(localStorage.getItem('fd_sessions') || '[]');
   } catch(e) {}
   if (token) showApp();
-  wakeBackend();
 })();
-
-async function wakeBackend(attempt) {
-  attempt = attempt || 1;
-  const banner = document.getElementById('backendBanner');
-  banner.className = 'backend-banner waking';
-  banner.innerHTML = '⏳ Connecting to server…';
-  banner.hidden = false;
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 40000);
-  try {
-    const r = await fetch(`${API}/health`, { signal: controller.signal });
-    clearTimeout(timer);
-    if (r.ok) { banner.hidden = true; return; }
-    throw new Error(`HTTP ${r.status}`);
-  } catch(e) {
-    clearTimeout(timer);
-    if (attempt < 3) {
-      setTimeout(() => wakeBackend(attempt + 1), 5000);
-    } else {
-      banner.className = 'backend-banner error';
-      banner.innerHTML = '⚠️ Server not responding. You can still try sending a message — it may start up shortly.';
-    }
-  }
-}
 
 function updateSend() {
   document.getElementById('sendBtn').disabled = !document.getElementById('msgInput').value.trim() && !attachedImg;
@@ -865,7 +825,6 @@ function doLogout() {
   document.getElementById('password').value = '';
 }
 function showApp() {
-  document.getElementById('backendBanner').hidden = true;
   document.getElementById('loginPage').hidden = true;
   document.getElementById('app').hidden = false;
   document.getElementById('uEmail').textContent = userInfo.email || 'User';
