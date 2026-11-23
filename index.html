@@ -7,6 +7,7 @@
 <title>ফসলের ডাক্তার</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
 :root {
   --sidebar:       #0f3320;
@@ -269,8 +270,59 @@ textarea, input { font-family: inherit; }
 .msg-row.bot .m-text {
   font-size: 15px; line-height: 1.85; color: var(--text);
   font-family:'Noto Sans Bengali','Inter',sans-serif;
-  white-space: pre-wrap; word-break: break-word;
+  word-break: break-word;
 }
+
+/* Markdown rendered inside bot messages */
+.msg-row.bot .m-text h1,
+.msg-row.bot .m-text h2,
+.msg-row.bot .m-text h3 {
+  font-weight: 700; margin: 18px 0 8px; color: var(--accent);
+  font-family: 'Inter','Noto Sans Bengali',sans-serif;
+  text-wrap: balance;
+}
+.msg-row.bot .m-text h1 { font-size: 20px; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
+.msg-row.bot .m-text h2 { font-size: 17px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.msg-row.bot .m-text h3 { font-size: 15px; color: var(--accent-mid); }
+.msg-row.bot .m-text p  { margin: 8px 0; }
+.msg-row.bot .m-text strong { font-weight: 700; color: var(--text); }
+.msg-row.bot .m-text em { font-style: italic; }
+.msg-row.bot .m-text hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.msg-row.bot .m-text ul,
+.msg-row.bot .m-text ol { margin: 8px 0 8px 20px; }
+.msg-row.bot .m-text li { margin: 4px 0; }
+.msg-row.bot .m-text blockquote {
+  border-left: 3px solid var(--accent-light); margin: 10px 0;
+  padding: 6px 14px; background: var(--surface2); border-radius: 0 6px 6px 0;
+  color: var(--muted); font-style: italic;
+}
+.msg-row.bot .m-text code {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 5px; font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+.msg-row.bot .m-text pre {
+  background: #0f3320; color: #c8f7dc;
+  border-radius: 8px; padding: 14px 16px; overflow-x: auto;
+  margin: 10px 0; font-size: 13px; line-height: 1.6;
+}
+.msg-row.bot .m-text pre code { background: none; border: none; padding: 0; color: inherit; }
+/* Tables */
+.msg-row.bot .m-text table {
+  border-collapse: collapse; width: 100%; margin: 12px 0;
+  font-size: 14px; display: block; overflow-x: auto;
+}
+.msg-row.bot .m-text th {
+  background: var(--accent); color: #fff;
+  padding: 8px 12px; text-align: left; font-weight: 600;
+}
+.msg-row.bot .m-text td {
+  padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: top;
+}
+.msg-row.bot .m-text tr:nth-child(even) td { background: var(--surface2); }
+.msg-row.bot .m-text tr:last-child td { border-bottom: none; }
+.msg-row.bot .m-text thead th:first-child { border-radius: 6px 0 0 0; }
+.msg-row.bot .m-text thead th:last-child  { border-radius: 0 6px 0 0; }
 
 /* User text — pill bubble */
 .msg-row.user .m-text {
@@ -758,6 +810,18 @@ textarea, input { font-family: inherit; }
 
 <script>
 const API = 'https://fosholer-daktar.onrender.com';
+
+function renderMd(text) {
+  if (!text) return '';
+  if (typeof marked === 'undefined') return text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  marked.setOptions({ breaks: true, gfm: true });
+  const raw = marked.parse(text);
+  /* Basic XSS sanitization: strip <script> and on* attributes */
+  return raw
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/\son\w+="[^"]*"/gi, '')
+    .replace(/\son\w+='[^']*'/gi, '');
+}
 let token = '', userInfo = { email: '', role: '' }, history = [];
 let attachedImg = null, docFile = null, isLoading = false;
 let chatSessions = [], allKnowledge = [], currentView = 'chat';
@@ -1119,7 +1183,7 @@ function appendBotMsg(data) {
     p.textContent=`🔬 ${data.disease_detected.replace(/_/g,' ')}${data.confidence?' · '+(data.confidence*100).toFixed(0)+'%':''}`;
     body.appendChild(p);
   }
-  const t=mk('div','m-text'); t.textContent=data.reply; body.appendChild(t);
+  const t=mk('div','m-text'); t.innerHTML=renderMd(data.reply); body.appendChild(t);
   const acts=mk('div','m-actions'), cb=mk('button','m-act-btn');
   cb.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy`;
   cb.onclick=()=>{ navigator.clipboard.writeText(data.reply).then(()=>showToast('Copied!')).catch(()=>{}); };
