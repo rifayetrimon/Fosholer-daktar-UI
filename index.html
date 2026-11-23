@@ -274,6 +274,7 @@ textarea, input { font-family: inherit; }
 }
 
 /* Markdown rendered inside bot messages */
+.msg-row.bot .m-text > *:first-child { margin-top: 0 !important; }
 .msg-row.bot .m-text h1,
 .msg-row.bot .m-text h2,
 .msg-row.bot .m-text h3 {
@@ -334,8 +335,12 @@ textarea, input { font-family: inherit; }
   display: inline-block; max-width: 100%;
 }
 
-.m-img { max-width: 200px; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); margin-bottom: 8px; }
-.m-img img { width: 100%; display: block; }
+.m-img { max-width: 260px; border-radius: 14px; overflow: hidden; border: 2px solid var(--border); margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
+.m-img img { width: 100%; display: block; cursor: zoom-in; }
+
+/* Image lightbox */
+.img-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
+.img-lightbox img { max-width: 92vw; max-height: 90vh; border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,.5); }
 
 .disease-pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1169,7 +1174,17 @@ function appendUserMsg(text, file) {
   const wrap = mk('div','msg-wrapper'), row = mk('div','msg-row user');
   const av = mk('div','m-av'); av.textContent = (userInfo.email||'U')[0].toUpperCase();
   const body = mk('div','m-body');
-  if (file) { const b=mk('div','m-img'); const i=document.createElement('img'); i.src=URL.createObjectURL(file); b.appendChild(i); body.appendChild(b); }
+  if (file) {
+    const b=mk('div','m-img'), i=document.createElement('img');
+    const src = URL.createObjectURL(file); i.src = src;
+    i.onclick = () => {
+      const lb = mk('div','img-lightbox');
+      const big = document.createElement('img'); big.src = src;
+      lb.appendChild(big); document.body.appendChild(lb);
+      lb.onclick = () => lb.remove();
+    };
+    b.appendChild(i); body.appendChild(b);
+  }
   if (text) { const t=mk('div','m-text'); t.textContent=text; body.appendChild(t); }
   row.appendChild(body); row.appendChild(av); wrap.appendChild(row); msgs().appendChild(wrap); scrollBottom();
 }
@@ -1189,6 +1204,7 @@ function appendBotMsg(data) {
   cb.onclick=()=>{ navigator.clipboard.writeText(data.reply).then(()=>showToast('Copied!')).catch(()=>{}); };
   acts.appendChild(cb); body.appendChild(acts);
   row.appendChild(av); row.appendChild(body); wrap.appendChild(row); msgs().appendChild(wrap);
+  scrollBottom();
 }
 function appendTyping() {
   const id='typing-'+Date.now(), wrap=mk('div','msg-wrapper'); wrap.id=id;
