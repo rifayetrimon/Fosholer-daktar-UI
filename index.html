@@ -93,6 +93,16 @@ textarea, input { font-family: inherit; }
   background: #fee2e2; border: 1px solid #fca5a5;
   color: #991b1b; border-radius: 8px; font-size: 13px;
 }
+.login-success {
+  margin-top: 12px; padding: 10px 13px;
+  background: #dcfce7; border: 1px solid #86efac;
+  color: #166534; border-radius: 8px; font-size: 13px;
+}
+.auth-toggle {
+  margin-top: 18px; text-align: center; font-size: 13px; color: var(--muted);
+}
+.auth-toggle a { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: none; }
+.auth-toggle a:hover { text-decoration: underline; }
 
 /* ════════════ APP SHELL ════════════ */
 .app { display: flex; height: 100vh; height: 100dvh; }
@@ -520,17 +530,43 @@ textarea, input { font-family: inherit; }
       <div class="brand-name">ফসলের ডাক্তার</div>
       <div class="brand-sub">AI Crop Disease Detection · Bangladesh</div>
     </div>
-    <div class="login-title">Welcome back</div>
-    <div class="field">
-      <label>Email address</label>
-      <input type="email" id="email" placeholder="you@example.com" autocomplete="username">
+
+    <!-- Sign In form -->
+    <div id="signinForm">
+      <div class="login-title">Welcome back</div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">Sign In</button>
+      <div class="login-err" id="loginErr" hidden></div>
+      <div class="auth-toggle">Don't have an account? <a onclick="showSignup()">Sign Up</a></div>
     </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+
+    <!-- Sign Up form -->
+    <div id="signupForm" hidden>
+      <div class="login-title">Create account</div>
+      <div class="field">
+        <label>Full name</label>
+        <input type="text" id="su_name" placeholder="Your name">
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="su_email" placeholder="you@example.com" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="su_password" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="btn-login" id="signupBtn" onclick="doSignup()">Create Account</button>
+      <div class="login-err" id="signupErr" hidden></div>
+      <div class="login-success" id="signupOk" hidden></div>
+      <div class="auth-toggle">Already have an account? <a onclick="showSignin()">Sign In</a></div>
     </div>
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">Sign In</button>
-    <div class="login-err" id="loginErr" hidden></div>
   </div>
 </div>
 
@@ -742,6 +778,45 @@ async function doLogin() {
   }
 }
 function showLoginErr(m) { const el = document.getElementById('loginErr'); el.textContent = m; el.hidden = false; }
+function showSignup() {
+  document.getElementById('signinForm').hidden = true;
+  document.getElementById('signupForm').hidden = false;
+  document.getElementById('signupErr').hidden = true;
+  document.getElementById('signupOk').hidden = true;
+}
+function showSignin() {
+  document.getElementById('signupForm').hidden = true;
+  document.getElementById('signinForm').hidden = false;
+  document.getElementById('loginErr').hidden = true;
+}
+async function doSignup() {
+  const name = document.getElementById('su_name').value.trim();
+  const email = document.getElementById('su_email').value.trim();
+  const pw = document.getElementById('su_password').value;
+  const btn = document.getElementById('signupBtn');
+  const errEl = document.getElementById('signupErr');
+  const okEl = document.getElementById('signupOk');
+  errEl.hidden = true; okEl.hidden = true;
+  if (!name || !email || !pw) { errEl.textContent = 'সব ঘর পূরণ করুন।'; errEl.hidden = false; return; }
+  if (pw.length < 8) { errEl.textContent = 'Password কমপক্ষে ৮ অক্ষর হতে হবে।'; errEl.hidden = false; return; }
+  btn.disabled = true; btn.textContent = 'Creating…';
+  try {
+    const r = await fetch(`${API}/api/v1/auth/register`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: name, email, password: pw })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Registration failed');
+    okEl.textContent = 'Account created! Please sign in.';
+    okEl.hidden = false;
+    setTimeout(() => { showSignin(); document.getElementById('email').value = email; }, 1500);
+  } catch(e) {
+    errEl.textContent = e.message || 'Registration failed.';
+    errEl.hidden = false;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+}
 function doLogout() {
   token = ''; history = []; attachedImg = null; docFile = null;
   try { localStorage.removeItem('fd_token'); } catch(e) {}
