@@ -825,6 +825,28 @@ textarea, input { font-family: inherit; }
 <script>
 const API = 'https://fosholer-daktar.onrender.com';
 
+function fileToThumb(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 400;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.65));
+      };
+      img.onerror = () => resolve(null);
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
 function renderMd(text) {
   if (!text) return '';
   if (typeof marked === 'undefined') return text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -1033,7 +1055,7 @@ function loadConversation(id) {
   const msgsEl = document.getElementById('messages');
   msgsEl.innerHTML = '';
   history.forEach(m => {
-    if (m.role === 'user') appendUserMsg(m.content, null);
+    if (m.role === 'user') appendUserMsg(m.content, m.imgSrc || null);
     else appendBotMsg({ reply: m.content });
   });
   renderHistory();
@@ -1111,7 +1133,8 @@ async function sendMessage() {
   const file = attachedImg, userText = text;
   input.value = ''; input.style.height = 'auto'; removeAttach();
   appendUserMsg(userText, file);
-  history.push({ role: 'user', content: userText || '📷 ছবি' });
+  const imgSrc = file ? await fileToThumb(file) : null;
+  history.push({ role: 'user', content: userText || '📷 ছবি', imgSrc });
   const tid = appendTyping();
 
   async function doChat(attempt) {
@@ -1179,13 +1202,15 @@ async function sendMessage() {
 
 function quickAsk(text) { document.getElementById('msgInput').value = text; updateSend(); sendMessage(); }
 
-function appendUserMsg(text, file) {
+function appendUserMsg(text, imgInput) {
+  /* imgInput: File object (live send) OR data-URL string (history restore) OR null */
   const wrap = mk('div','msg-wrapper'), row = mk('div','msg-row user');
   const av = mk('div','m-av'); av.textContent = (userInfo.email||'U')[0].toUpperCase();
   const body = mk('div','m-body');
-  if (file) {
+  if (imgInput) {
     const b=mk('div','m-img'), i=document.createElement('img');
-    const src = URL.createObjectURL(file); i.src = src;
+    const src = typeof imgInput === 'string' ? imgInput : URL.createObjectURL(imgInput);
+    i.src = src;
     i.onclick = () => {
       const lb = mk('div','img-lightbox');
       const big = document.createElement('img'); big.src = src;
@@ -1196,8 +1221,6 @@ function appendUserMsg(text, file) {
   }
   if (text && text !== '📷 ছবি') {
     const t=mk('div','m-text'); t.textContent=text; body.appendChild(t);
-  } else if (!file && text === '📷 ছবি') {
-    const p=mk('div','img-sent-pill'); p.textContent='📷 ছবি পাঠানো হয়েছে'; body.appendChild(p);
   }
   row.appendChild(body); row.appendChild(av); wrap.appendChild(row); msgs().appendChild(wrap); scrollBottom();
 }
