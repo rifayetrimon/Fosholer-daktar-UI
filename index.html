@@ -162,6 +162,7 @@ textarea, input { font-family: inherit; }
 }
 .s-item:hover { background: var(--sidebar-hover); color: #fff; }
 .s-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.s-item-active { background: var(--sidebar-active) !important; color: #fff !important; }
 
 .sidebar-bottom { padding: 10px; border-top: 1px solid rgba(255,255,255,.1); }
 .user-row {
@@ -736,12 +737,21 @@ const API = 'https://fosholer-daktar.onrender.com';
 let token = '', userInfo = { email: '', role: '' }, history = [];
 let attachedImg = null, docFile = null, isLoading = false;
 let chatSessions = [], allKnowledge = [], currentView = 'chat';
+let currentConvId = null;
+
+function convKey() { return `fd_convs_${userInfo.email || 'guest'}`; }
+
+function loadUserConversations() {
+  try { chatSessions = JSON.parse(localStorage.getItem(convKey()) || '[]'); } catch(e) { chatSessions = []; }
+}
+function saveUserConversations() {
+  try { localStorage.setItem(convKey(), JSON.stringify(chatSessions)); } catch(e) {}
+}
 
 (function init() {
   try {
     token = localStorage.getItem('fd_token') || '';
     userInfo = JSON.parse(localStorage.getItem('fd_user') || '{}');
-    chatSessions = JSON.parse(localStorage.getItem('fd_sessions') || '[]');
   } catch(e) {}
   if (token) showApp();
 })();
@@ -818,7 +828,7 @@ async function doSignup() {
   }
 }
 function doLogout() {
-  token = ''; history = []; attachedImg = null; docFile = null;
+  token = ''; history = []; attachedImg = null; docFile = null; currentConvId = null; chatSessions = [];
   try { localStorage.removeItem('fd_token'); } catch(e) {}
   document.getElementById('app').hidden = true;
   document.getElementById('loginPage').hidden = false;
@@ -831,6 +841,7 @@ function showApp() {
   document.getElementById('uRole').textContent  = userInfo.role === 'admin' ? 'Admin' : 'Farmer';
   document.getElementById('userAv').textContent  = (userInfo.email || 'U')[0].toUpperCase();
   if (userInfo.role === 'admin') document.getElementById('navManage').hidden = false;
+  loadUserConversations();
   renderHistory();
   switchView('chat');
 }
@@ -855,20 +866,41 @@ function closeSidebar() { document.getElementById('sidebar').classList.remove('o
 function renderHistory() {
   const list = document.getElementById('historyList');
   list.innerHTML = '';
-  chatSessions.slice().reverse().slice(0, 20).forEach(s => {
+  if (!chatSessions.length) {
+    list.innerHTML = '<div style="padding:8px 20px;font-size:12px;color:#7aaa8c;opacity:.7">No conversations yet</div>';
+    return;
+  }
+  chatSessions.slice().reverse().slice(0, 30).forEach(s => {
     const el = document.createElement('div');
-    el.className = 's-item';
-    el.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>${s.title}</span>`;
-    el.onclick = () => { switchView('chat'); closeSidebar(); };
+    el.className = 's-item' + (s.id === currentConvId ? ' s-item-active' : '');
+    el.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.title}</span>`;
+    el.onclick = () => loadConversation(s.id);
     list.appendChild(el);
   });
 }
 
+function loadConversation(id) {
+  const conv = chatSessions.find(s => s.id === id);
+  if (!conv) return;
+  currentConvId = id;
+  history = (conv.messages || []).map(m => ({ role: m.role, content: m.content }));
+  const msgsEl = document.getElementById('messages');
+  msgsEl.innerHTML = '';
+  history.forEach(m => {
+    if (m.role === 'user') appendUserMsg(m.content, null);
+    else appendBotMsg({ reply: m.content });
+  });
+  renderHistory();
+  switchView('chat');
+  scrollBottom();
+}
+
 /* Chat */
 function newChat() {
-  history = []; attachedImg = null; removeAttach();
+  history = []; attachedImg = null; currentConvId = null; removeAttach();
   document.getElementById('messages').innerHTML = '';
   document.getElementById('messages').appendChild(buildWelcome());
+  renderHistory();
   switchView('chat');
 }
 
@@ -951,11 +983,15 @@ async function sendMessage() {
     const data = await res.json();
     appendBotMsg(data);
     history.push({ role: 'assistant', content: data.reply });
-    if (history.length === 2) {
-      chatSessions.push({ title: (userText || 'Image chat').slice(0, 42), ts: Date.now() });
-      try { localStorage.setItem('fd_sessions', JSON.stringify(chatSessions)); } catch(e) {}
-      renderHistory();
+    if (!currentConvId) {
+      currentConvId = Date.now().toString();
+      chatSessions.push({ id: currentConvId, title: (userText || 'Image chat').slice(0, 42), messages: [...history], ts: Date.now() });
+    } else {
+      const idx = chatSessions.findIndex(s => s.id === currentConvId);
+      if (idx >= 0) chatSessions[idx].messages = [...history];
     }
+    saveUserConversations();
+    renderHistory();
   } catch(e) {
     removeEl(tid);
     const msg = e.message === 'Failed to fetch'
