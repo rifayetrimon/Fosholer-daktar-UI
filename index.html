@@ -1188,7 +1188,15 @@ async function sendMessage() {
     history.push({ role: 'assistant', content: data.reply });
     if (!currentConvId) {
       currentConvId = Date.now().toString();
-      chatSessions.push({ id: currentConvId, title: (userText || 'Image chat').slice(0, 42), messages: [...history], ts: Date.now() });
+      let title = userText;
+      if (!title && data.disease_detected) {
+        title = data.disease_detected.replace(/___/g, ' – ').replace(/_/g, ' ');
+      }
+      if (!title) {
+        title = (data.reply || '').replace(/[*#>\-`]/g, '').trim().split('\n')[0].slice(0, 48);
+      }
+      if (!title) title = 'Chat ' + new Date().toLocaleDateString('bn-BD');
+      chatSessions.push({ id: currentConvId, title: title.slice(0, 50), messages: [...history], ts: Date.now() });
     } else {
       const idx = chatSessions.findIndex(s => s.id === currentConvId);
       if (idx >= 0) { chatSessions[idx].messages = [...history]; chatSessions[idx].ts = Date.now(); }
