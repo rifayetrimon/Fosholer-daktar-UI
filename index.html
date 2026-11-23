@@ -338,6 +338,15 @@ textarea, input { font-family: inherit; }
 .m-img { max-width: 260px; border-radius: 14px; overflow: hidden; border: 2px solid var(--border); margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
 .m-img img { width: 100%; display: block; cursor: zoom-in; }
 
+/* Image-sent placeholder (history) */
+.img-sent-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  color: var(--muted); border-radius: 12px;
+  padding: 8px 14px; font-size: 14px;
+  font-family:'Noto Sans Bengali','Inter',sans-serif;
+}
+
 /* Image lightbox */
 .img-lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
 .img-lightbox img { max-width: 92vw; max-height: 90vh; border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,.5); }
@@ -1185,7 +1194,11 @@ function appendUserMsg(text, file) {
     };
     b.appendChild(i); body.appendChild(b);
   }
-  if (text) { const t=mk('div','m-text'); t.textContent=text; body.appendChild(t); }
+  if (text && text !== '📷 ছবি') {
+    const t=mk('div','m-text'); t.textContent=text; body.appendChild(t);
+  } else if (!file && text === '📷 ছবি') {
+    const p=mk('div','img-sent-pill'); p.textContent='📷 ছবি পাঠানো হয়েছে'; body.appendChild(p);
+  }
   row.appendChild(body); row.appendChild(av); wrap.appendChild(row); msgs().appendChild(wrap); scrollBottom();
 }
 function appendBotMsg(data) {
