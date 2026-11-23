@@ -247,24 +247,42 @@ textarea, input { font-family: inherit; }
 .chip-card:hover { border-color: var(--accent-mid); box-shadow: 0 2px 10px rgba(27,94,59,.12); }
 .chip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
-/* Message rows */
-.msg-row { display: flex; gap: 14px; margin-bottom: 24px; }
-.msg-row.user { justify-content: flex-end; }
+/* ════════════ MESSAGES — ChatGPT style ════════════ */
+.msg-row { display: flex; gap: 16px; margin-bottom: 28px; align-items: flex-start; }
 
+/* Bot: icon + flowing text, full width */
+.msg-row.bot { flex-direction: row; }
 .m-av {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 30px; height: 30px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  font-size: 15px; flex-shrink: 0; margin-top: 2px;
 }
-.msg-row.bot  .m-av { background: linear-gradient(135deg, var(--accent), var(--accent-mid)); color: #fff; }
-.msg-row.user .m-av { background: var(--accent-light); color: #fff; }
+.msg-row.bot .m-av  { background: linear-gradient(135deg, var(--accent), var(--accent-mid)); }
+.msg-row.user .m-av { display: none; }
 
 .m-body { flex: 1; min-width: 0; }
-.msg-row.user .m-body { max-width: 72%; flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; }
+.msg-row.user .m-body { flex: 0 0 auto; max-width: 70%; display: flex; flex-direction: column; align-items: flex-end; }
 
-.m-name { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--accent); }
+.m-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--accent); letter-spacing: .01em; }
 
-.m-img { max-width: 220px; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border); margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+/* Bot text — no bubble, just clean text */
+.msg-row.bot .m-text {
+  font-size: 15px; line-height: 1.85; color: var(--text);
+  font-family:'Noto Sans Bengali','Inter',sans-serif;
+  white-space: pre-wrap; word-break: break-word;
+}
+
+/* User text — pill bubble */
+.msg-row.user .m-text {
+  background: var(--user-bubble); color: #fff;
+  padding: 11px 18px; border-radius: 20px 20px 4px 20px;
+  font-size: 15px; line-height: 1.6;
+  font-family:'Noto Sans Bengali','Inter',sans-serif;
+  white-space: pre-wrap; word-break: break-word;
+  display: inline-block; max-width: 100%;
+}
+
+.m-img { max-width: 200px; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); margin-bottom: 8px; }
 .m-img img { width: 100%; display: block; }
 
 .disease-pill {
@@ -272,46 +290,34 @@ textarea, input { font-family: inherit; }
   background: var(--amber-bg); border: 1px solid var(--amber-border);
   color: #92400e; border-radius: 999px;
   padding: 4px 12px; font-size: 12px; font-weight: 600;
-  margin-bottom: 8px; letter-spacing: .01em;
+  margin-bottom: 10px; letter-spacing: .01em;
 }
 
-.m-text {
-  font-size: 15px; line-height: 1.75; color: var(--text);
-  font-family:'Noto Sans Bengali','Inter',sans-serif;
-  white-space: pre-wrap; word-break: break-word;
-}
-.msg-row.bot .m-text {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 2px 14px 14px 14px;
-  padding: 12px 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.06);
-}
-.msg-row.user .m-text {
-  background: var(--user-bubble);
-  color: #fff; padding: 12px 16px;
-  border-radius: 14px 2px 14px 14px;
-  display: inline-block; max-width: 100%;
-}
+/* Separator line after bot reply */
+.msg-row.bot { padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.msg-row.bot:last-of-type { border-bottom: none; }
 
-.m-actions { display: flex; gap: 4px; margin-top: 8px; opacity: 0; transition: opacity .15s; }
+.m-actions { display: flex; gap: 4px; margin-top: 10px; opacity: 0; transition: opacity .15s; }
 .msg-row:hover .m-actions { opacity: 1; }
 .m-act-btn {
-  background: none; border: 1px solid var(--border); color: var(--muted);
-  padding: 4px 10px; border-radius: 6px; font-size: 12px;
+  background: none; border: none; color: var(--muted);
+  padding: 4px 8px; border-radius: 6px; font-size: 12px;
   display: flex; align-items: center; gap: 5px;
   transition: background .15s, color .15s;
 }
-.m-act-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent-mid); }
+.m-act-btn:hover { background: var(--surface2); color: var(--text); }
+
+/* Row wrapper — give bot rows full width */
+.msg-row.user { justify-content: flex-end; border-bottom: none; padding-bottom: 0; }
 
 /* Typing */
-.typing-row { display: flex; gap: 14px; margin-bottom: 24px; }
-.typing-bubble {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 2px 14px 14px 14px; padding: 14px 18px;
-  display: flex; gap: 5px; align-items: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+.typing-row { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; }
+.typing-av {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0; margin-top: 2px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-mid));
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
 }
+.typing-bubble { display: flex; gap: 5px; align-items: center; padding: 4px 0; }
 .dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--accent-mid);
@@ -748,12 +754,29 @@ function saveUserConversations() {
   try { localStorage.setItem(convKey(), JSON.stringify(chatSessions)); } catch(e) {}
 }
 
-(function init() {
+(async function init() {
   try {
     token = localStorage.getItem('fd_token') || '';
     userInfo = JSON.parse(localStorage.getItem('fd_user') || '{}');
   } catch(e) {}
-  if (token) showApp();
+  if (token) {
+    // Refresh profile from server in background
+    fetch(`${API}/api/v1/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } })
+      .then(r => r.ok ? r.json() : null)
+      .then(mu => {
+        if (!mu) return;
+        userInfo.full_name = mu.full_name || userInfo.full_name;
+        userInfo.email = mu.email || userInfo.email;
+        userInfo.role = mu.role || userInfo.role;
+        try { localStorage.setItem('fd_user', JSON.stringify(userInfo)); } catch(e) {}
+        const displayName = userInfo.full_name || userInfo.email || 'User';
+        const el = document.getElementById('uEmail');
+        if (el) el.textContent = displayName;
+        const av = document.getElementById('userAv');
+        if (av) av.textContent = displayName[0].toUpperCase();
+      }).catch(() => {});
+    showApp();
+  }
 })();
 
 function updateSend() {
@@ -776,10 +799,17 @@ async function doLogin() {
     const d = await r.json();
     if (!r.ok) throw new Error(d.detail || 'Login failed');
     token = d.access_token;
+    // Fetch full profile to get full_name
     try {
-      const p = JSON.parse(atob(token.split('.')[1]));
-      userInfo = { email: p.sub || email, role: p.role || 'user' };
-    } catch(e) { userInfo = { email, role: 'user' }; }
+      const me = await fetch(`${API}/api/v1/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const mu = await me.json();
+      userInfo = { email: mu.email || email, full_name: mu.full_name || email, role: mu.role || 'user' };
+    } catch(e) {
+      try {
+        const p = JSON.parse(atob(token.split('.')[1]));
+        userInfo = { email, full_name: email, role: p.role || 'user' };
+      } catch(e2) { userInfo = { email, full_name: email, role: 'user' }; }
+    }
     try { localStorage.setItem('fd_token', token); localStorage.setItem('fd_user', JSON.stringify(userInfo)); } catch(e) {}
     showApp();
   } catch(e) {
@@ -837,9 +867,10 @@ function doLogout() {
 function showApp() {
   document.getElementById('loginPage').hidden = true;
   document.getElementById('app').hidden = false;
-  document.getElementById('uEmail').textContent = userInfo.email || 'User';
+  const displayName = userInfo.full_name || userInfo.email || 'User';
+  document.getElementById('uEmail').textContent = displayName;
   document.getElementById('uRole').textContent  = userInfo.role === 'admin' ? 'Admin' : 'Farmer';
-  document.getElementById('userAv').textContent  = (userInfo.email || 'U')[0].toUpperCase();
+  document.getElementById('userAv').textContent  = displayName[0].toUpperCase();
   if (userInfo.role === 'admin') document.getElementById('navManage').hidden = false;
   loadUserConversations();
   renderHistory();
@@ -1032,7 +1063,7 @@ function appendBotMsg(data) {
 function appendTyping() {
   const id='typing-'+Date.now(), wrap=mk('div','msg-wrapper'); wrap.id=id;
   const row=mk('div','typing-row');
-  const av=mk('div','m-av'); av.style.cssText='width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1b5e3b,#2d7a56);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;'; av.textContent='🌿';
+  const av=mk('div','typing-av'); av.textContent='🌿';
   const bubble=mk('div','typing-bubble'); for(let i=0;i<3;i++) bubble.appendChild(mk('div','dot'));
   row.appendChild(av); row.appendChild(bubble); wrap.appendChild(row); msgs().appendChild(wrap); scrollBottom(); return id;
 }
