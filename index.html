@@ -1205,7 +1205,6 @@ async function sendMessage() {
     appendBotMsg(data);
     history.push({ role: 'assistant', content: data.reply });
     if (!currentConvId) {
-      currentConvId = Date.now().toString();
       let title = userText;
       if (!title && data.disease_detected) {
         title = data.disease_detected.replace(/___/g, ' – ').replace(/_/g, ' ');
@@ -1216,8 +1215,11 @@ async function sendMessage() {
       if (!title) title = 'Chat ' + new Date().toLocaleDateString('bn-BD');
       title = title.slice(0, 50);
       const newId = await saveConversation(true, title, history);
-      currentConvId = newId || currentConvId;
-      chatSessions.unshift({ id: currentConvId, title, messages: [...history], ts: Date.now() });
+      if (newId) {
+        currentConvId = newId;
+        chatSessions.unshift({ id: currentConvId, title, messages: [...history], ts: Date.now() });
+      }
+      // if POST failed, currentConvId stays null so next message retries
     } else {
       const idx = chatSessions.findIndex(s => s.id === currentConvId);
       if (idx >= 0) {
