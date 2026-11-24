@@ -1061,7 +1061,7 @@ function renderHistory() {
     list.innerHTML = '<div style="padding:8px 20px;font-size:12px;color:#7aaa8c;opacity:.7">No conversations yet</div>';
     return;
   }
-  chatSessions.slice().reverse().slice(0, 30).forEach(s => {
+  chatSessions.slice(0, 30).forEach(s => {
     const el = document.createElement('div');
     el.className = 's-item' + (s.id === currentConvId ? ' s-item-active' : '');
     el.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.title}</span>`;
@@ -1220,7 +1220,12 @@ async function sendMessage() {
       chatSessions.unshift({ id: currentConvId, title, messages: [...history], ts: Date.now() });
     } else {
       const idx = chatSessions.findIndex(s => s.id === currentConvId);
-      if (idx >= 0) { chatSessions[idx].messages = [...history]; chatSessions[idx].ts = Date.now(); }
+      if (idx >= 0) {
+        chatSessions[idx].messages = [...history];
+        chatSessions[idx].ts = Date.now();
+        // move to top so sidebar always shows most-recently-active first
+        chatSessions.unshift(chatSessions.splice(idx, 1)[0]);
+      }
       saveConversation(false, null, history);
     }
     renderHistory();
